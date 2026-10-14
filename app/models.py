@@ -1,13 +1,14 @@
+"""
+SQLAlchemy database models for AgriStress Analytics.
+Simple, readable tables for student research and SQLite storage.
+"""
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, Date, DateTime, Boolean, Text
 from app.database import Base
 
 
 class KCCObservation(Base):
-    """
-    Stores Kisan Call Centre query records.
-    Can store daily aggregated counts by state/district or raw query logs.
-    """
+    """Stores Kisan Call Centre query records."""
     __tablename__ = "kcc_observations"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -15,8 +16,8 @@ class KCCObservation(Base):
     state = Column(String(100), nullable=False, index=True)
     district = Column(String(100), nullable=True)
     query_type = Column(String(100), nullable=True)
-    query_count = Column(Integer, nullable=False, default=1)
-    is_synthetic = Column(Boolean, default=False, nullable=False)
+    query_count = Column(Integer, default=1, nullable=False)
+    is_synthetic = Column(Boolean, default=False)
     source_ref = Column(String(200), nullable=True)
 
     def to_dict(self):
@@ -28,16 +29,12 @@ class KCCObservation(Base):
             "query_type": self.query_type,
             "query_count": self.query_count,
             "is_synthetic": self.is_synthetic,
-            "source_ref": self.source_ref,
+            "source_ref": self.source_ref
         }
 
 
 class CommodityObservation(Base):
-    """
-    Stores agricultural commodity mandi prices and physical arrivals.
-    Wholesale price is in INR per Quintal (100 kg).
-    Retail price is optional because retail monitoring is limited in practice.
-    """
+    """Stores wholesale mandi prices and arrivals."""
     __tablename__ = "commodity_observations"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -50,7 +47,7 @@ class CommodityObservation(Base):
     retail_price = Column(Float, nullable=True)
     arrival_quantity = Column(Float, nullable=True)
     units = Column(String(50), default="INR/Quintal")
-    is_synthetic = Column(Boolean, default=False, nullable=False)
+    is_synthetic = Column(Boolean, default=False)
     source_ref = Column(String(200), nullable=True)
 
     def to_dict(self):
@@ -66,15 +63,12 @@ class CommodityObservation(Base):
             "arrival_quantity": self.arrival_quantity,
             "units": self.units,
             "is_synthetic": self.is_synthetic,
-            "source_ref": self.source_ref,
+            "source_ref": self.source_ref
         }
 
 
 class FuelObservation(Base):
-    """
-    Stores retail fuel prices (primarily High Speed Diesel).
-    Typically available at state capital / metro level in INR per Litre.
-    """
+    """Stores daily retail diesel fuel prices in INR/Litre."""
     __tablename__ = "fuel_observations"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -82,7 +76,7 @@ class FuelObservation(Base):
     state = Column(String(100), nullable=True, index=True)
     diesel_price = Column(Float, nullable=False)
     currency = Column(String(20), default="INR/Litre")
-    is_synthetic = Column(Boolean, default=False, nullable=False)
+    is_synthetic = Column(Boolean, default=False)
     source_ref = Column(String(200), nullable=True)
 
     def to_dict(self):
@@ -93,20 +87,18 @@ class FuelObservation(Base):
             "diesel_price": self.diesel_price,
             "currency": self.currency,
             "is_synthetic": self.is_synthetic,
-            "source_ref": self.source_ref,
+            "source_ref": self.source_ref
         }
 
 
 class ImportHistory(Base):
-    """
-    Tracks every CSV import attempt for auditability and transparency.
-    """
+    """Simple audit log of CSV import runs."""
     __tablename__ = "import_history"
 
     id = Column(Integer, primary_key=True, index=True)
     dataset_type = Column(String(50), nullable=False)
     filename = Column(String(255), nullable=False)
-    import_time = Column(DateTime, default=datetime.utcnow, nullable=False)
+    import_time = Column(DateTime, default=datetime.utcnow)
     total_records = Column(Integer, default=0)
     accepted_records = Column(Integer, default=0)
     rejected_records = Column(Integer, default=0)
@@ -125,18 +117,16 @@ class ImportHistory(Base):
             "rejected_records": self.rejected_records,
             "duplicate_records": self.duplicate_records,
             "status": self.status,
-            "notes": self.notes,
+            "notes": self.notes
         }
 
 
 class ForecastHistory(Base):
-    """
-    Logs generated forecasts, their horizon, evaluation metrics, and advisory stress ratings.
-    """
+    """Logs forecast outputs and operational advisory stress category."""
     __tablename__ = "forecast_history"
 
     id = Column(Integer, primary_key=True, index=True)
-    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
     model_name = Column(String(100), nullable=False)
     target_variable = Column(String(50), default="query_count")
     state = Column(String(100), nullable=True)
@@ -162,5 +152,5 @@ class ForecastHistory(Base):
             "mae": self.mae,
             "rmse": self.rmse,
             "mape": self.mape,
-            "stress_category": self.stress_category,
+            "stress_category": self.stress_category
         }

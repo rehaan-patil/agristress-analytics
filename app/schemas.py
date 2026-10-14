@@ -1,9 +1,9 @@
-from datetime import date
+"""
+Pydantic data schemas for API requests and responses.
+"""
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 
-
-# --- Health & Status Schemas ---
 
 class HealthResponse(BaseModel):
     status: str
@@ -28,7 +28,14 @@ class DatasetStatusResponse(BaseModel):
     notes: List[str]
 
 
-# --- CSV Import Schemas ---
+class OverviewResponse(BaseModel):
+    kcc_total_queries: int
+    commodity_records: int
+    fuel_records: int
+    date_range: Dict[str, Optional[str]]
+    states_covered: List[str]
+    is_synthetic: bool
+
 
 class ImportResultResponse(BaseModel):
     dataset_type: str
@@ -39,17 +46,6 @@ class ImportResultResponse(BaseModel):
     duplicate_rows: int
     status: str
     errors: List[str] = []
-
-
-# --- Analysis Schemas ---
-
-class OverviewResponse(BaseModel):
-    kcc_total_queries: int
-    commodity_records: int
-    fuel_records: int
-    date_range: Dict[str, Optional[str]]
-    states_covered: List[str]
-    is_synthetic: bool
 
 
 class SummaryStatsItem(BaseModel):
@@ -92,12 +88,10 @@ class CorrelationPair(BaseModel):
     note: str
 
 
-# --- Hypothesis Testing Schemas ---
-
 class HypothesisTestRequest(BaseModel):
     state: Optional[str] = None
     commodity: Optional[str] = None
-    diesel_shock_threshold_pct: float = Field(default=2.0, description="Percentage change threshold to classify diesel price shock")
+    diesel_shock_threshold_pct: float = Field(default=2.0)
 
 
 class SingleHypothesisResult(BaseModel):
@@ -124,8 +118,6 @@ class HypothesisReportResponse(BaseModel):
     disclaimer: str
 
 
-# --- Forecasting & Stress Indicator Schemas ---
-
 class ExogenousScenario(BaseModel):
     date: str
     commodity_price: Optional[float] = None
@@ -135,9 +127,9 @@ class ExogenousScenario(BaseModel):
 class ForecastRequest(BaseModel):
     state: Optional[str] = None
     commodity: Optional[str] = None
-    horizon_days: int = Field(default=14, ge=1, le=90, description="Number of future days to forecast")
-    use_sarimax: bool = Field(default=True, description="True for SARIMAX, False for Baseline Naive")
-    future_exogenous: Optional[List[ExogenousScenario]] = Field(default=None, description="Optional exogenous scenario values")
+    horizon_days: int = Field(default=14, ge=1, le=90)
+    use_sarimax: bool = True
+    future_exogenous: Optional[List[ExogenousScenario]] = None
 
 
 class ForecastPoint(BaseModel):
@@ -160,7 +152,7 @@ class StressEvaluation(BaseModel):
 class ForecastResponse(BaseModel):
     forecast_id: Optional[int] = None
     model_name: str
-    state: Optional[str]
+    state: Optional[str] = None
     target: str = "query_count"
     train_start: str
     train_end: str
@@ -174,8 +166,6 @@ class ForecastResponse(BaseModel):
     stress_assessment: StressEvaluation
     warnings: List[str] = []
 
-
-# --- Report Generation Schemas ---
 
 class ReportGenerateResponse(BaseModel):
     report_filename: str
