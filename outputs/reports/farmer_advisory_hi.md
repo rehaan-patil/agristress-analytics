@@ -27,16 +27,16 @@
 
 1. माल लोड करने से पहले जिस मंडी में जा रहे हैं वहां के आज के ताज़ा भाव और आवक की पुष्टि करें; भाड़ा और तुलाई खर्च घटाकर मिलने वाले शुद्ध लाभ की तुलना करें।
 2. यदि आपकी फसल गैर-नाशवंत है (जैसे सूखी प्याज या अनाज) और आपके पास सुरक्षित सूखा भंडारण है, तो अपनी आर्थिक स्थिति के अनुसार तुरंत बेचने के बजाय अस्थायी भंडारण के विकल्प का मूल्यांकन करें।
-3. Kisan Call Centre (Toll-Free 1800-180-1551) is readily available for routine crop, seed, or fertilizer questions.
+3. फसल, बीज या खाद से संबंधित सामान्य प्रश्नों के लिए किसान कॉल सेंटर (टोल-फ्री: 1800-180-1551) पर संपर्क कर सकते हैं।
 
 ---
 
 ## कदम उठाने से पहले क्या जांचें (What to check before acting)
 
-- **Transport & Handling Expenses:** Obtain a firm quotation from a local vehicle operator before choosing between mandis. A higher price in a distant city may not cover the extra freight.
-- **Crop Perishability:** Highly perishable produce (such as ripe tomatoes) cannot be stored without refrigeration. Evaluate on-farm storage viability before deciding to delay sale.
-- **Moisture & Quality Grading:** Mandi traders bid based on lot cleanliness, size sorting, and moisture content. Graded produce commands the upper end of the price range.
-- **Immediate Cash Requirements:** Weigh storage and delayed sale against personal cash needs for input repayment, labor wages, or household expenses.
+- **परिवहन एवं तुलाई खर्च:** मंडी चुनने से पहले स्थानीय वाहन चालक से पक्का भाड़ा तय करें। दूर की मंडी का ऊंचा भाव अतिरिक्त भाड़े में डूब सकता है।
+- **फसल की जीवन अवधि (नाशवंतता):** जल्द खराब होने वाली फसलें बिना कोल्ड स्टोरेज के नहीं रखी जा सकतीं। बिक्री टालने से पहले खेत या घर पर भंडारण की सुरक्षा जांचें।
+- **छंटाई एवं ग्रेडिंग:** मंडी में भाव माल की सफाई, आकार और नमी पर निर्भर करता है। साफ और ग्रेडेड माल को अधिकतम भाव मिलता है।
+- **तत्काल नकदी आवश्यकता:** अगली बुवाई, खाद-बीज के भुगतान या मजदूरी के लिए तुरंत पैसे की जरूरत को ध्यान में रखकर ही भंडारण का निर्णय लें।
 
 ---
 
@@ -66,4 +66,4 @@
 - **Verified Official Support:** Kisan Call Centre Toll-Free **1800-180-1551** (6:00 AM to 10:00 PM, all 7 days of the week). Gram Panchayat Krishi Sahayak offices provide localized in-person assistance.
 
 ---
-*AgriStress Analytics — Farmer Decision-Support Advisory (Generated: 2026-10-20 18:05 UTC)*
+*AgriStress Analytics — Farmer Decision-Support Advisory (Generated: 2026-10-20 18:18 UTC)*
