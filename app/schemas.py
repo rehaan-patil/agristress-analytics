@@ -97,6 +97,7 @@ class HypothesisTestRequest(BaseModel):
 class SingleHypothesisResult(BaseModel):
     hypothesis_code: str
     title: str
+    research_question: Optional[str] = None
     null_hypothesis: str
     alternative_hypothesis: str
     test_used: str
@@ -107,6 +108,7 @@ class SingleHypothesisResult(BaseModel):
     significance_level: float = 0.05
     reject_null: bool
     verdict_plain_english: str
+    assumptions: Optional[str] = None
     limitations: str
 
 

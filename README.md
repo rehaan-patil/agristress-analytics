@@ -6,7 +6,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-1.0.0-009688.svg)](https://fastapi.tiangolo.com/)
 [![Statsmodels](https://img.shields.io/badge/Statsmodels-SARIMAX-orange.svg)](https://www.statsmodels.org/)
-[![Tests](https://img.shields.io/badge/Tests-26%20Passing-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-30%20Passing-brightgreen.svg)]()
 [![License](https://img.shields.io/badge/License-Academic-lightgrey.svg)]()
 
 ---
@@ -20,38 +20,41 @@ While query volumes follow natural agro-climatic rhythms (such as monsoon onset 
 - **Wholesale-to-Retail Price Spreads:** Expanding margins between farm-gate realization and consumer retail prices.
 - **Fuel Price Shocks:** Rapid increases in High Speed Diesel (HSD) prices, which drive up diesel-pumped irrigation and tractor transport costs.
 
-**AgriStress Analytics** is a Python-only research backend that harmonizes multi-source government agricultural data, conducts formal econometric hypothesis testing, forecasts future query influx using SARIMAX, and classifies operational advisory-service stress into transparent levels (`Normal`, `Elevated`, `High`).
+**AgriStress Analytics** is a Python-only analytical application (no frontend or visual interface) that harmonizes multi-source government agricultural data, conducts formal econometric hypothesis testing, forecasts future query influx using SARIMAX, and classifies operational advisory-service stress into transparent proxy levels (`Normal`, `Elevated`, `High`).
 
 ---
 
-## 2. Key Features
+## 2. Key Features & Deliverables
 
+- **Pure Python Logic (No Frontend):** Focused entirely on robust data pipelines, econometric calculations, time-series forecasting, and saved tabular and visual research artifacts.
+- **One-Command Reproducible Pipeline:** Execute the complete end-to-end research workflow with a single command: `python run_pipeline.py`.
 - **Multi-Source Data Ingestion & Validation:**
   - Robust CSV readers for KCC call records, Agmarknet wholesale commodity prices, and PPAC retail diesel prices.
-  - Automatic column standardization, date format parsing, and duplicate row detection.
+  - Automatic column standardization, date format parsing, missing value handling, and duplicate row detection.
 - **Temporal Alignment & Feature Engineering:**
-  - Harmonizes mismatched reporting frequencies onto a continuous daily grid.
+  - Harmonizes mismatched reporting frequencies (Daily, Weekly, Monthly) onto a continuous timeline without duplicate inflation.
   - Engineers 7-day rolling commodity price volatility, wholesale-to-retail margin spreads, and diesel price momentum.
 - **Defensible Econometric Hypothesis Testing:**
   - **Hypothesis A:** Pearson correlation test assessing linear association between commodity price percentage returns and query demand.
-  - **Hypothesis B:** Non-parametric Mann-Whitney U test evaluating query influx differences during diesel price shock periods ($|\%\Delta D_t| \ge 2\%$).
+  - **Hypothesis B:** Non-parametric Mann-Whitney U test evaluating query influx differences during diesel price shock periods.
   - **Hypothesis C:** Spearman rank-order correlation examining wholesale-to-retail price spreads against advisory demand.
-- **SARIMAX Time-Series Forecasting:**
-  - Enforces strict chronological train-test splitting (80% train, 20% test) to prevent future lookahead bias.
+- **SARIMAX Time-Series Forecasting & Benchmark:**
+  - Enforces strict chronological train-test splitting (avoiding future data leakage).
   - Fits seasonal $\text{SARIMAX}(1,1,1)(1,1,0)[7]$ capturing the 7-day weekly call center cycle.
   - Directly benchmarks against a 7-day Seasonal Naive baseline using MAE, RMSE, and zero-safe MAPE.
-  - Computes 95% confidence intervals and clips negative predictions.
+  - Produces out-of-sample holdout validation plots and 14-day future forecasts with 95% confidence intervals.
 - **Transparent Advisory-Stress Classification:**
   - Maps forecasted demand against historical baseline mean and standard deviation:
     - `Normal`: Demand $< \mu + 0.75\sigma$
     - `Elevated`: $\mu + 0.75\sigma \le \text{Demand} < \mu + 1.75\sigma$
     - `High`: $\text{Demand} \ge \mu + 1.75\sigma$
-  - Discloses forecast uncertainty when confidence bounds cross into higher operational categories.
-- **FastAPI REST API:**
-  - 16 interactive endpoints for health, ingestion, statistical summaries, hypothesis testing, forecasting, and reporting.
-  - Local Swagger documentation at `/docs`.
-- **Automated Reporting & Visualization:**
-  - Exports 9 publication-grade charts to `outputs/charts/` and a comprehensive markdown report to `outputs/reports/summary_report.md`.
+- **Comprehensive Generated Outputs:**
+  - `outputs/tables/`: CSV tables of descriptive stats, correlations, hypotheses, and regional summaries.
+  - `outputs/forecasts/`: CSV tables of forecast predictions and out-of-sample evaluation metrics.
+  - `outputs/charts/`: 10 publication-quality PNG charts including holdout validation and correlation heatmaps.
+  - `outputs/reports/summary_report.md`: Complete human-readable markdown research report.
+- **Optional Programmatic REST API:**
+  - FastAPI backend serving 16 endpoints for programmatic access and automated evaluation.
 
 ---
 
@@ -62,14 +65,11 @@ While query volumes follow natural agro-climatic rhythms (such as monsoon onset 
 | **Language** | Python 3.10+ | Core application logic |
 | **Data Processing** | Pandas, NumPy | Data cleaning, reshaping, and feature engineering |
 | **Econometrics & Stats** | SciPy, Statsmodels | Pearson/Spearman tests, Mann-Whitney U, SARIMAX |
-| **Visualizations** | Matplotlib, Seaborn | Exploratory time-series plots and heatmaps |
-| **API Framework** | FastAPI, Uvicorn | High-performance asynchronous REST API |
-| **Request Validation** | Pydantic v2 | Schema validation and serialization |
+| **Visualizations** | Matplotlib, Seaborn | Exploratory time-series plots, heatmaps, and validation figures |
 | **Database ORM** | SQLAlchemy 2.0 | Multi-engine persistence (SQLite / PostgreSQL) |
 | **Local Storage** | SQLite 3 | Default zero-configuration local database |
-| **Testing** | Pytest | Unit and integration test suite |
-| **Containerization** | Docker | Production container image |
-| **Deployment** | Render | Cloud PaaS deployment specification |
+| **API Framework** | FastAPI, Uvicorn | Optional programmatic REST API (no frontend) |
+| **Testing** | Pytest | Unit and integration test suite (30 passing tests) |
 
 ---
 
@@ -77,9 +77,9 @@ While query volumes follow natural agro-climatic rhythms (such as monsoon onset 
 
 ```
 agristress-analytics/
+├── run_pipeline.py           # Primary one-command research pipeline runner
 ├── app/
 │   ├── __init__.py           # Package indicator
-│   ├── main.py               # FastAPI application entrypoint & static mount
 │   ├── config.py             # Environment variables and path resolution
 │   ├── database.py           # SQLAlchemy engine & session dependency
 │   ├── models.py             # SQLAlchemy ORM models (KCC, Commodity, Fuel, History)
@@ -87,105 +87,66 @@ agristress-analytics/
 │   ├── data_processing.py    # CSV ingestion, validation, and feature engineering
 │   ├── analysis.py           # Descriptive stats, hypothesis tests, and chart generation
 │   ├── forecasting.py        # Baseline naive, SARIMAX, and advisory stress evaluation
-│   └── api.py                # FastAPI route handlers
+│   ├── api.py                # Programmatic FastAPI route handlers
+│   └── main.py               # FastAPI application entrypoint
 ├── scripts/
-│   ├── init_db.py            # Database table creation script
+│   ├── init_db.py            # Database table creation & reset script
 │   ├── generate_demo_data.py # Deterministic synthetic dataset generator (seed=42)
 │   ├── import_data.py        # CLI dataset importer
-│   └── run_analysis.py       # End-to-end analytical pipeline runner
+│   └── run_analysis.py       # Local analysis script
 ├── tests/
-│   ├── __init__.py
-│   ├── test_data_processing.py # CSV validation & alignment tests
+│   ├── test_data_processing.py # CSV validation, alignment, and quality tests
 │   ├── test_analysis.py        # Descriptive stats & hypothesis testing tests
 │   ├── test_forecasting.py     # Metrics, SARIMAX & stress indicator tests
 │   └── test_api.py             # REST API endpoint integration tests
 ├── data/
-│   ├── raw/                  # Ingested raw source CSV files
-│   ├── processed/            # Harmonized analytical dataset
-│   └── synthetic/            # Synthetic demonstration files
+│   ├── raw/                  # Ingested raw source CSV files (data.gov.in, Agmarknet, PPAC)
+│   ├── processed/            # Harmonized analytical dataset (analytical_dataset.csv)
+│   └── synthetic/            # Synthetic demonstration files (clearly identified)
 ├── outputs/
-│   ├── charts/               # Generated PNG visualization plots
-│   └── reports/              # Generated markdown research reports
+│   ├── charts/               # Generated PNG visualization plots (10 charts)
+│   ├── tables/               # Generated CSV result tables
+│   ├── forecasts/            # Generated forecast CSV tables and evaluation metrics
+│   └── reports/              # Comprehensive markdown research summary report
 ├── docs/
 │   ├── DATA_SOURCES.md       # Target government schemas and portal documentation
 │   ├── METHODOLOGY.md        # Mathematical definitions, SARIMAX, and hypothesis tests
 │   └── LIMITATIONS.md        # Scientific boundaries and correlation vs causation
-├── .env.example              # Sample environment configuration
-├── .gitignore                # Git exclusion rules
 ├── requirements.txt          # Python dependencies
-├── Dockerfile                # Production container specification
-├── render.yaml               # Render Cloud deployment blueprint
-└── README.md                 # Project guide
+└── README.md                 # Complete documentation
 ```
 
 ---
 
-## 5. Getting Started Locally
+## 5. Quick Start & Execution
 
-### Step 1: Clone the Repository & Setup Environment
+### Step 1: Install Dependencies
 ```bash
-git clone https://github.com/rehaan-patil/agristress-analytics.git
-cd agristress-analytics
-
-# Create and activate a virtual environment
-python -m venv .venv
-
-# On Windows:
-.venv\Scripts\activate
-# On Linux/macOS:
-source .venv/bin/activate
-```
-
-### Step 2: Install Dependencies
-```bash
-pip install --upgrade pip
+python -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-### Step 3: Configure Environment Variables
+### Step 2: Run the Complete Research Pipeline
+To execute the complete data pipeline, run all statistical tests, generate forecasts, export all CSV tables, and create all charts and the final summary report in one step:
 ```bash
-# Copy example configuration (defaults to local SQLite database)
-copy .env.example .env    # On Windows
-# or: cp .env.example .env # On Linux/macOS
+python run_pipeline.py
 ```
 
-### Step 4: Initialize the Database
+Optional arguments:
 ```bash
-python scripts/init_db.py
+# Force regenerate synthetic demo data and re-import:
+python run_pipeline.py --generate-data
+
+# Filter by a specific state or commodity:
+python run_pipeline.py --state Maharashtra --commodity Onion --horizon 21
 ```
 
----
-
-## 6. Demonstration Workflow
-
-The entire analytical pipeline can be demonstrated offline using deterministic demo data:
-
-### 1. Generate Synthetic Datasets
-```bash
-python scripts/generate_demo_data.py
-```
-*Generates 730 days of synthetic records for KCC queries, mandi prices, and diesel fuel prices in `data/synthetic/`.*
-
-### 2. Ingest Data into SQLite
-```bash
-# Ingest all demo datasets
-python scripts/import_data.py --all
-
-# Inspect ingestion status
-python scripts/import_data.py --status
-```
-
-### 3. Run the End-to-End Analysis Pipeline
-```bash
-python scripts/run_analysis.py
-```
-This script executes:
-1. Harmonization into `data/processed/analytical_dataset.csv`.
-2. Descriptive statistical summaries across variables.
-3. Generation of 8 exploratory charts in `outputs/charts/`.
-4. Econometric tests for Hypothesis A, B, and C.
-5. Chronological SARIMAX model training, evaluation, and 14-day advisory stress forecasting.
-6. Compilation of the full research report in `outputs/reports/summary_report.md`.
+### Step 3: Inspect Generated Outputs
+All outputs are organized in the `outputs/` folder:
+- **Research Summary Report:** `outputs/reports/summary_report.md`
+- **Charts:** `outputs/charts/*.png`
+- **Result Tables:** `outputs/tables/*.csv`
+- **Forecast Predictions & Metrics:** `outputs/forecasts/*.csv`
 
 ---
 

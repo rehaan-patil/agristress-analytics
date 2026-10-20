@@ -15,7 +15,8 @@ from app.data_processing import (
     import_kcc_csv,
     import_commodity_csv,
     import_fuel_csv,
-    build_analytical_dataset
+    build_analytical_dataset,
+    get_data_quality_report
 )
 
 
@@ -109,3 +110,31 @@ def test_data_alignment_pipeline(in_memory_db):
     assert "commodity_price_change" in df_aligned.columns
     # Check price spread calculation: 2800 - 2000 = 800
     assert df_aligned.loc[0, "price_spread"] == 800.0
+    assert "is_synthetic" in df_aligned.columns
+    assert bool(df_aligned.loc[0, "is_synthetic"]) is True
+
+
+def test_data_quality_report(in_memory_db):
+    kcc_csv = io.StringIO("""observation_date,state,query_count
+2024-01-01,Maharashtra,10
+2024-01-03,Maharashtra,20
+""")
+    import_kcc_csv(kcc_csv, in_memory_db, is_synthetic=True)
+    report = get_data_quality_report(in_memory_db)
+    assert report["total_calendar_days"] == 3
+    assert report["observed_query_days"] == 2
+    assert report["zero_or_unrecorded_days"] == 1  # 2024-01-02 missing
+    assert report["is_synthetic"] is True
+
+
+def test_build_analytical_dataset_weekly_freq(in_memory_db):
+    # 14 days of data
+    rows = "\n".join([f"2024-01-{i+1:02d},Maharashtra,10" for i in range(14)])
+    kcc_csv = io.StringIO(f"observation_date,state,query_count\n{rows}\n")
+    import_kcc_csv(kcc_csv, in_memory_db, is_synthetic=False)
+
+    df_weekly = build_analytical_dataset(in_memory_db, state="Maharashtra", freq="W", export_csv=False)
+    assert len(df_weekly) == 2
+    assert "query_count" in df_weekly.columns
+    assert df_weekly["query_count"].sum() == 140
+

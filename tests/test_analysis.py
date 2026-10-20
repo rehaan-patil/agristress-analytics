@@ -74,3 +74,18 @@ def test_get_correlations():
     for c in corrs:
         assert -1.0 <= c["pearson_r"] <= 1.0
         assert -1.0 <= c["spearman_rho"] <= 1.0
+
+
+def test_hypothesis_result_includes_research_question_and_assumptions():
+    df = pd.DataFrame({
+        "query_count": list(range(100, 130)),
+        "commodity_pct_change": [0.5 * i for i in range(30)]
+    })
+    res = run_hypothesis_tests(df)
+    hyp_a = next(r for r in res["results"] if r["hypothesis_code"] == "HYP-A")
+    assert "research_question" in hyp_a
+    assert "assumptions" in hyp_a
+    assert "limitations" in hyp_a
+    assert hyp_a["research_question"] is not None
+    assert "autocorrelation" in hyp_a["assumptions"]
+

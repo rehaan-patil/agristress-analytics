@@ -87,19 +87,21 @@ def generate_forecast(
     train, test = series.iloc[:-test_size], series.iloc[-test_size:]
 
     # 1. Seasonal Naive baseline (value from 7 days prior)
-    baseline_preds = [series.iloc[len(train) + i - 7] if (len(train) + i - 7) >= 0 else train.mean() for i in range(len(test))]
-    baseline_metrics = calculate_metrics(test.values, np.array(baseline_preds))
+    baseline_preds = np.array([series.iloc[len(train) + i - 7] if (len(train) + i - 7) >= 0 else train.mean() for i in range(len(test))])
+    baseline_metrics = calculate_metrics(test.values, baseline_preds)
 
-    # 2. Fit SARIMAX
+    # 2. Fit SARIMAX on training set for holdout evaluation
     model_name = "Seasonal Naive Baseline (7-Day Lag)"
     chosen_metrics = baseline_metrics
+    sarimax_test_preds = None
     warnings = []
 
     if use_sarimax:
         try:
             fit_res = SARIMAX(train, order=(1, 1, 1), seasonal_order=(1, 1, 0, 7), enforce_stationarity=False, enforce_invertibility=False).fit(disp=False)
-            test_preds = np.clip(fit_res.predict(start=test.index[0], end=test.index[-1]), 0, None)
-            chosen_metrics = calculate_metrics(test.values, test_preds.values)
+            sarimax_test_preds = np.clip(fit_res.predict(start=test.index[0], end=test.index[-1]).values, 0, None)
+            sarimax_metrics = calculate_metrics(test.values, sarimax_test_preds)
+            chosen_metrics = sarimax_metrics
             model_name = "SARIMAX(1,1,1)(1,1,0)[7]"
         except Exception as e:
             warnings.append(f"SARIMAX optimization error: {e}. Used baseline.")
@@ -139,23 +141,72 @@ def generate_forecast(
         for d, m, low, high in zip(future_dates, pred_mean, pred_lower, pred_upper)
     ]
 
-    # 5. Save chart
-    plot_path = OUTPUTS_DIR / "charts" / "forecast_evaluation.png"
-    plt.figure(figsize=(10, 4))
-    recent = series.iloc[-60:]
-    plt.plot(recent.index, recent.values, label="Historical Actuals", color="#2563eb")
-    plt.plot(future_dates, pred_mean, label=f"Forecast: {model_name}", color="#ea580c")
-    plt.fill_between(future_dates, pred_lower, pred_upper, color="#fed7aa", alpha=0.5, label="95% Confidence Interval")
-    plt.axhline(hist_mean, color="gray", linestyle="--", label="Historical Mean")
-    plt.title(f"Advisory Demand Forecast ({horizon_days} Days)")
+    # 5. Save visual evaluation charts
+    charts_dir = OUTPUTS_DIR / "charts"
+    charts_dir.mkdir(parents=True, exist_ok=True)
+    
+    # 5A. Dedicated Actual vs Predicted plot for out-of-sample holdout test period
+    plot_avp_path = charts_dir / "actual_vs_predicted.png"
+    plt.figure(figsize=(10, 4.5))
+    plt.plot(test.index, test.values, label="Actual Observed Queries", color="#1e293b", linewidth=2, marker="o", markersize=4)
+    plt.plot(test.index, baseline_preds, label=f"Seasonal Naive Baseline (MAE={baseline_metrics['mae']:.1f})", color="#64748b", linestyle="--")
+    if sarimax_test_preds is not None:
+        plt.plot(test.index, sarimax_test_preds, label=f"SARIMAX(1,1,1)(1,1,0)[7] (MAE={chosen_metrics['mae']:.1f})", color="#2563eb", linewidth=2)
+    plt.title("Holdout Validation: Out-of-Sample Actual vs Predicted Demand")
     plt.xlabel("Date")
-    plt.ylabel("Inquiries")
-    plt.legend()
+    plt.ylabel("KCC Inquiries")
+    plt.legend(loc="upper left")
+    plt.grid(True, linestyle=":", alpha=0.6)
     plt.tight_layout()
-    plt.savefig(plot_path, dpi=120)
+    plt.savefig(plot_avp_path, dpi=130)
     plt.close()
 
-    # 6. Save run in database
+    # 5B. Comprehensive 2-Panel Forecast Evaluation Plot
+    plot_path = charts_dir / "forecast_evaluation.png"
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+
+    # Left: Out-of-sample test comparison
+    ax1.plot(test.index, test.values, label="Actual Queries", color="#1e293b", linewidth=2, marker="o", markersize=3)
+    if sarimax_test_preds is not None:
+        ax1.plot(test.index, sarimax_test_preds, label=f"SARIMAX Pred (MAE={chosen_metrics['mae']:.1f})", color="#2563eb")
+    ax1.plot(test.index, baseline_preds, label=f"Baseline (MAE={baseline_metrics['mae']:.1f})", color="#94a3b8", linestyle="--")
+    ax1.set_title("A. Test-Split Evaluation (Out-of-Sample)")
+    ax1.set_xlabel("Date")
+    ax1.set_ylabel("Inquiries")
+    ax1.legend(fontsize=9)
+    ax1.grid(True, linestyle=":", alpha=0.5)
+
+    # Right: Future forecast horizon with uncertainty intervals
+    recent_tail = series.iloc[-30:]
+    ax2.plot(recent_tail.index, recent_tail.values, label="Recent Actuals", color="#334155")
+    ax2.plot(future_dates, pred_mean, label=f"Forecast: {model_name}", color="#ea580c", linewidth=2)
+    ax2.fill_between(future_dates, pred_lower, pred_upper, color="#fed7aa", alpha=0.6, label="95% Confidence Interval")
+    ax2.axhline(stress["elevated_threshold"], color="#f59e0b", linestyle=":", label=f"Elevated Stress (>={stress['elevated_threshold']:.0f})")
+    ax2.axhline(stress["high_threshold"], color="#ef4444", linestyle="--", label=f"High Stress (>={stress['high_threshold']:.0f})")
+    ax2.set_title(f"B. Future Forecast ({horizon_days} Days) & Stress Proxy")
+    ax2.set_xlabel("Date")
+    ax2.set_ylabel("Inquiries")
+    ax2.legend(fontsize=8, loc="upper left")
+    ax2.grid(True, linestyle=":", alpha=0.5)
+
+    plt.suptitle("AgriStress Analytics — Time-Series Forecasting & Advisory Stress", fontsize=12, fontweight="bold")
+    plt.tight_layout()
+    plt.savefig(plot_path, dpi=130)
+    plt.close()
+
+    # 6. Save tabular outputs in outputs/forecasts/
+    forecasts_dir = OUTPUTS_DIR / "forecasts"
+    forecasts_dir.mkdir(parents=True, exist_ok=True)
+    df_preds = pd.DataFrame(predictions)
+    df_preds.to_csv(forecasts_dir / "forecast_predictions.csv", index=False)
+
+    df_metrics = pd.DataFrame([
+        {"model": "Seasonal Naive Baseline (7D Lag)", "mae": baseline_metrics["mae"], "rmse": baseline_metrics["rmse"], "mape": baseline_metrics["mape"], "selected": model_name.startswith("Seasonal")},
+        {"model": "SARIMAX(1,1,1)(1,1,0)[7]", "mae": chosen_metrics.get("mae"), "rmse": chosen_metrics.get("rmse"), "mape": chosen_metrics.get("mape"), "selected": model_name.startswith("SARIMAX")}
+    ])
+    df_metrics.to_csv(forecasts_dir / "forecast_evaluation_metrics.csv", index=False)
+
+    # 7. Save run in database
     rec = ForecastHistory(
         model_name=model_name,
         target_variable="query_count",
@@ -167,7 +218,7 @@ def generate_forecast(
         rmse=chosen_metrics.get("rmse"),
         mape=chosen_metrics.get("mape"),
         stress_category=stress["category"],
-        details_json=json.dumps({"predictions": predictions, "stress": stress})
+        details_json=json.dumps({"predictions": predictions, "stress": stress, "baseline_metrics": baseline_metrics})
     )
     db.add(rec)
     db.commit()
@@ -185,6 +236,7 @@ def generate_forecast(
         "mae": chosen_metrics.get("mae"),
         "rmse": chosen_metrics.get("rmse"),
         "mape": chosen_metrics.get("mape"),
+        "baseline_metrics": baseline_metrics,
         "predictions": predictions,
         "stress_assessment": stress,
         "warnings": warnings

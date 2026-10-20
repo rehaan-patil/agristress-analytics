@@ -1,0 +1,8 @@
+variable_x,variable_y,pearson_r,spearman_rho,sample_size,note
+KCC Query Demand,Wholesale Commodity Price,-0.2109,-0.2222,730,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,Commodity Price Daily Change,0.0053,-0.0072,729,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,7-Day Commodity Price Volatility,0.0461,0.0218,729,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,Wholesale-Retail Price Spread,-0.2109,-0.2222,730,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,Diesel Price Level,0.3096,0.3011,730,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,Diesel Daily Price Change,0.0585,0.0556,729,Linear correlation (Pearson) and rank correlation (Spearman).
+KCC Query Demand,7-Day Lagged Diesel Price Change,0.0565,0.0584,722,Linear correlation (Pearson) and rank correlation (Spearman).

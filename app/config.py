@@ -24,6 +24,11 @@ DATA_DIR.mkdir(parents=True, exist_ok=True)
 OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 (OUTPUTS_DIR / "charts").mkdir(parents=True, exist_ok=True)
 (OUTPUTS_DIR / "reports").mkdir(parents=True, exist_ok=True)
+(OUTPUTS_DIR / "tables").mkdir(parents=True, exist_ok=True)
+(OUTPUTS_DIR / "forecasts").mkdir(parents=True, exist_ok=True)
+
+TABLES_DIR = OUTPUTS_DIR / "tables"
+FORECASTS_DIR = OUTPUTS_DIR / "forecasts"
 
 # Server configuration
 HOST = os.getenv("HOST", "0.0.0.0")

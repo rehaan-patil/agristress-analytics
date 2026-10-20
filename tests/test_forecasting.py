@@ -107,3 +107,27 @@ def test_generate_forecast_insufficient_data():
     assert len(res["predictions"]) == 0
     assert len(res["warnings"]) > 0
     empty_db.close()
+
+
+def test_generate_forecast_exports_csv_and_plots(mock_db_with_series):
+    from app.config import OUTPUTS_DIR
+    res = generate_forecast(
+        db=mock_db_with_series,
+        state="Maharashtra",
+        horizon_days=7,
+        use_sarimax=True
+    )
+    assert res["model_name"] != "NONE"
+    
+    # Check that CSV files exist in outputs/forecasts/
+    preds_csv = OUTPUTS_DIR / "forecasts" / "forecast_predictions.csv"
+    metrics_csv = OUTPUTS_DIR / "forecasts" / "forecast_evaluation_metrics.csv"
+    assert preds_csv.exists()
+    assert metrics_csv.exists()
+
+    # Check that charts exist in outputs/charts/
+    eval_png = OUTPUTS_DIR / "charts" / "forecast_evaluation.png"
+    avp_png = OUTPUTS_DIR / "charts" / "actual_vs_predicted.png"
+    assert eval_png.exists()
+    assert avp_png.exists()
+

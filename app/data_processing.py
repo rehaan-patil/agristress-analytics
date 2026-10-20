@@ -198,8 +198,69 @@ def get_dataset_status(db: Session) -> Dict[str, Any]:
     return {"status": "READY" if ready else "INSUFFICIENT_DATA", "datasets": info, "ready_for_analysis": ready, "notes": notes}
 
 
+def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> Dict[str, Any]:
+    """
+    Evaluates data coverage, missingness, and data provenance.
+    Produces an understandable summary for research verification.
+    """
+    status = get_dataset_status(db)
+    is_synth = any(v["is_synthetic"] for v in status["datasets"].values())
+    
+    if df is None:
+        df = build_analytical_dataset(db, export_csv=False)
+
+    if df.empty:
+        return {
+            "total_calendar_days": 0,
+            "observed_query_days": 0,
+            "unrecorded_days": 0,
+            "missingness_percentage": 0.0,
+            "is_synthetic": is_synth,
+            "quality_status": "NO_DATA",
+            "quality_notes": ["No records found in database."]
+        }
+
+    min_date = df["observation_date"].min()
+    max_date = df["observation_date"].max()
+    total_days = (max_date - min_date).days + 1 if hasattr(min_date, "strftime") else len(df)
+    
+    zero_query_days = int((df["query_count"] == 0).sum())
+    observed_days = len(df) - zero_query_days
+    missing_pct = round((zero_query_days / len(df)) * 100.0, 2) if len(df) > 0 else 0.0
+
+    notes = []
+    if is_synth:
+        notes.append("PROVENANCE: Data contains synthetic demonstration observations generated deterministically.")
+    else:
+        notes.append("PROVENANCE: Real operational data imported from official sources.")
+
+    notes.append(f"Mandi holiday / Sunday closures are forward-filled for price continuous continuity.")
+    if zero_query_days > 0:
+        notes.append(f"{zero_query_days} days had 0 recorded queries (e.g., call centre closed on Sundays/holidays).")
+
+    quality_status = "GOOD" if missing_pct < 20 else ("ACCEPTABLE" if missing_pct < 40 else "POOR")
+
+    return {
+        "sample_start": str(min_date),
+        "sample_end": str(max_date),
+        "total_calendar_days": total_days,
+        "observed_query_days": observed_days,
+        "zero_or_unrecorded_days": zero_query_days,
+        "missingness_percentage": missing_pct,
+        "is_synthetic": is_synth,
+        "quality_status": quality_status,
+        "quality_notes": notes
+    }
+
+
 def build_analytical_dataset(db: Session, state: Optional[str] = None, commodity: Optional[str] = None, freq: str = "D", export_csv: bool = True) -> pd.DataFrame:
-    """Merges KCC queries, commodity prices, and fuel prices by date into a single DataFrame."""
+    """
+    Merges KCC queries, commodity prices, and fuel prices by date into a single DataFrame.
+    Supports daily ('D'), weekly ('W'), or monthly ('M') time aggregation without duplicate inflation.
+    """
+    # Check synthetic provenance in source tables
+    synth_kcc = db.query(KCCObservation.id).filter(KCCObservation.is_synthetic == True).first() is not None
+
     # 1. KCC daily queries
     q_kcc = db.query(KCCObservation.observation_date, func.sum(KCCObservation.query_count).label("query_count"))
     if state:
@@ -211,7 +272,12 @@ def build_analytical_dataset(db: Session, state: Optional[str] = None, commodity
     df_kcc["observation_date"] = pd.to_datetime(df_kcc["observation_date"])
 
     # 2. Commodity daily wholesale & retail prices
-    q_comm = db.query(CommodityObservation.observation_date, func.avg(CommodityObservation.wholesale_price).label("wholesale_price"), func.avg(CommodityObservation.retail_price).label("retail_price"), func.sum(CommodityObservation.arrival_quantity).label("arrival_quantity"))
+    q_comm = db.query(
+        CommodityObservation.observation_date,
+        func.avg(CommodityObservation.wholesale_price).label("wholesale_price"),
+        func.avg(CommodityObservation.retail_price).label("retail_price"),
+        func.sum(CommodityObservation.arrival_quantity).label("arrival_quantity")
+    )
     if state:
         q_comm = q_comm.filter(CommodityObservation.state == state)
     if commodity:
@@ -228,23 +294,46 @@ def build_analytical_dataset(db: Session, state: Optional[str] = None, commodity
     if not df_fuel.empty:
         df_fuel["observation_date"] = pd.to_datetime(df_fuel["observation_date"])
 
-    # 4. Merge on observation_date
+    # 4. Merge on observation_date (left join ensures each observation date is unique)
     merged = df_kcc.copy()
-    merged = pd.merge(merged, df_comm, on="observation_date", how="left") if not df_comm.empty else merged.assign(wholesale_price=np.nan, retail_price=np.nan, arrival_quantity=0)
+    merged = pd.merge(merged, df_comm, on="observation_date", how="left") if not df_comm.empty else merged.assign(wholesale_price=np.nan, retail_price=np.nan, arrival_quantity=0.0)
     merged = pd.merge(merged, df_fuel, on="observation_date", how="left") if not df_fuel.empty else merged.assign(diesel_price=np.nan)
 
-    # 5. Continuous date index
+    # 5. Continuous date index & aggregation
     merged = merged.sort_values("observation_date").set_index("observation_date")
-    full_idx = pd.date_range(merged.index.min(), merged.index.max(), freq="D")
-    merged = merged.reindex(full_idx)
-    merged.index.name = "observation_date"
+    
+    # Handle frequency aggregation
+    norm_freq = freq.upper()
+    if norm_freq.startswith("W"):
+        # Weekly aggregation: sum query volume and arrivals, average prices
+        merged = merged.resample("W-SUN").agg({
+            "query_count": "sum",
+            "wholesale_price": "mean",
+            "retail_price": "mean",
+            "arrival_quantity": "sum",
+            "diesel_price": "mean"
+        })
+    elif norm_freq.startswith("M"):
+        # Monthly aggregation
+        merged = merged.resample("MS").agg({
+            "query_count": "sum",
+            "wholesale_price": "mean",
+            "retail_price": "mean",
+            "arrival_quantity": "sum",
+            "diesel_price": "mean"
+        })
+    else:
+        # Default Daily ('D')
+        full_idx = pd.date_range(merged.index.min(), merged.index.max(), freq="D")
+        merged = merged.reindex(full_idx)
+        merged.index.name = "observation_date"
 
     # Forward fill prices for Sundays / mandi holidays, missing queries to 0
-    merged["query_count"] = merged["query_count"].fillna(0)
+    merged["query_count"] = merged["query_count"].fillna(0.0)
     merged["wholesale_price"] = merged["wholesale_price"].ffill().bfill()
     merged["retail_price"] = merged["retail_price"].ffill().bfill()
     merged["diesel_price"] = merged["diesel_price"].ffill().bfill()
-    merged["arrival_quantity"] = merged["arrival_quantity"].fillna(0)
+    merged["arrival_quantity"] = pd.to_numeric(merged["arrival_quantity"], errors="coerce").fillna(0.0)
 
     # 6. Feature calculations
     merged["commodity_price_change"] = merged["wholesale_price"].diff()
@@ -262,6 +351,9 @@ def build_analytical_dataset(db: Session, state: Optional[str] = None, commodity
     merged["diesel_pct_change"] = merged["diesel_price"].pct_change(fill_method=None) * 100.0
     merged["diesel_change_lag1"] = merged["diesel_price_change"].shift(1)
     merged["diesel_change_lag7"] = merged["diesel_price_change"].shift(7)
+    
+    # 7. Data Provenance
+    merged["is_synthetic"] = synth_kcc
 
     result = merged.reset_index()
     if export_csv:
