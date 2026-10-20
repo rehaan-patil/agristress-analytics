@@ -280,7 +280,7 @@ def run_hypothesis_tests(df: pd.DataFrame, diesel_shock_threshold_pct: float = 1
 # TABLE EXPORT FUNCTIONS — CSV OUTPUTS IN outputs/tables/
 # =====================================================================
 
-def save_analysis_tables(df: pd.DataFrame, db: Session) -> Dict[str, str]:
+def save_analysis_tables(df: pd.DataFrame, db: Session, diesel_shock_threshold_pct: float = 1.0) -> Dict[str, str]:
     """
     Saves clean CSV tables for descriptive stats, correlations, hypotheses,
     and regional summaries into outputs/tables/.
@@ -306,7 +306,7 @@ def save_analysis_tables(df: pd.DataFrame, db: Session) -> Dict[str, str]:
         saved["correlations"] = str(path_corrs)
 
     # 3. Hypothesis testing table
-    hyp = run_hypothesis_tests(df)
+    hyp = run_hypothesis_tests(df, diesel_shock_threshold_pct=diesel_shock_threshold_pct)
     if hyp["results"]:
         df_hyp = pd.DataFrame(hyp["results"])
         path_hyp = tables_dir / "hypothesis_tests.csv"
@@ -329,6 +329,8 @@ def save_analysis_tables(df: pd.DataFrame, db: Session) -> Dict[str, str]:
 # =====================================================================
 
 def plot_query_demand_over_time(df: pd.DataFrame, output_path: Path):
+    if "query_count" not in df.columns or df["query_count"].dropna().empty:
+        return
     plt.figure(figsize=(10, 4.5))
     plt.plot(df["observation_date"], df["query_count"], label="Daily KCC Queries", color="#3b82f6", alpha=0.5)
     plt.plot(df["observation_date"], df["query_count"].rolling(14, min_periods=2).mean(), label="14-Day Rolling Average", color="#ef4444", linewidth=2)
@@ -343,6 +345,8 @@ def plot_query_demand_over_time(df: pd.DataFrame, output_path: Path):
 
 
 def plot_seasonality(df: pd.DataFrame, output_path: Path):
+    if "query_count" not in df.columns or df["query_count"].dropna().empty:
+        return
     temp = df.copy()
     temp["day"] = temp["observation_date"].dt.day_name()
     days_order = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
@@ -360,6 +364,8 @@ def plot_seasonality(df: pd.DataFrame, output_path: Path):
 
 
 def plot_commodity_trends(df: pd.DataFrame, output_path: Path):
+    if "wholesale_price" not in df.columns or df["wholesale_price"].dropna().empty:
+        return
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
     ax1.plot(df["observation_date"], df["wholesale_price"], label="Wholesale Mandi Price", color="#059669")
     ax1.set_ylabel("Price (INR/Quintal)")
@@ -367,7 +373,7 @@ def plot_commodity_trends(df: pd.DataFrame, output_path: Path):
     ax1.grid(True, linestyle=":", alpha=0.5)
     ax1.legend()
 
-    if "commodity_volatility_7d" in df.columns:
+    if "commodity_volatility_7d" in df.columns and not df["commodity_volatility_7d"].dropna().empty:
         ax2.plot(df["observation_date"], df["commodity_volatility_7d"], label="7-Day Rolling Volatility (Std Dev)", color="#d97706")
         ax2.set_ylabel("Volatility (INR)")
         ax2.set_title("B. 7-Day Rolling Price Volatility")
@@ -381,6 +387,8 @@ def plot_commodity_trends(df: pd.DataFrame, output_path: Path):
 
 
 def plot_diesel_trends(df: pd.DataFrame, output_path: Path):
+    if "diesel_price" not in df.columns or df["diesel_price"].dropna().empty:
+        return
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 6), sharex=True)
     ax1.plot(df["observation_date"], df["diesel_price"], label="Retail Diesel Price", color="#db2777")
     ax1.set_ylabel("INR / Litre")
@@ -388,7 +396,7 @@ def plot_diesel_trends(df: pd.DataFrame, output_path: Path):
     ax1.grid(True, linestyle=":", alpha=0.5)
     ax1.legend()
 
-    if "diesel_pct_change" in df.columns:
+    if "diesel_pct_change" in df.columns and not df["diesel_pct_change"].dropna().empty:
         ax2.bar(df["observation_date"], df["diesel_pct_change"], color="#9333ea", width=1.0, label="Daily Revision %")
         ax2.axhline(1.5, color="red", linestyle=":", label="Shock Threshold (+1.5%)")
         ax2.axhline(-1.5, color="red", linestyle=":", label="Shock Threshold (-1.5%)")
@@ -404,10 +412,14 @@ def plot_diesel_trends(df: pd.DataFrame, output_path: Path):
 
 
 def plot_price_spread(df: pd.DataFrame, output_path: Path):
+    if "price_spread" not in df.columns or df["price_spread"].dropna().empty:
+        return
     plt.figure(figsize=(10, 4.5))
-    plt.plot(df["observation_date"], df["retail_price"], label="Consumer Retail Price", color="#7c3aed")
-    plt.plot(df["observation_date"], df["wholesale_price"], label="Wholesale Mandi Price", color="#16a34a")
-    if "price_spread" in df.columns:
+    if "retail_price" in df.columns and not df["retail_price"].dropna().empty:
+        plt.plot(df["observation_date"], df["retail_price"], label="Consumer Retail Price", color="#7c3aed")
+    if "wholesale_price" in df.columns and not df["wholesale_price"].dropna().empty:
+        plt.plot(df["observation_date"], df["wholesale_price"], label="Wholesale Mandi Price", color="#16a34a")
+    if "retail_price" in df.columns and "wholesale_price" in df.columns and not df["retail_price"].dropna().empty and not df["wholesale_price"].dropna().empty:
         plt.fill_between(df["observation_date"], df["wholesale_price"], df["retail_price"], color="#e9d5ff", alpha=0.5, label="Wholesale-Retail Margin Spread")
     plt.title("Wholesale Mandi vs Consumer Retail Price Spread")
     plt.xlabel("Date")
@@ -420,6 +432,8 @@ def plot_price_spread(df: pd.DataFrame, output_path: Path):
 
 
 def plot_query_vs_economic(df: pd.DataFrame, output_path: Path):
+    if "query_count" not in df.columns or "wholesale_price" not in df.columns or df["wholesale_price"].dropna().empty:
+        return
     fig, ax1 = plt.subplots(figsize=(10, 4.5))
     ax1.plot(df["observation_date"], df["query_count"].rolling(7, min_periods=1).mean(), color="#2563eb", label="KCC Queries (7D Moving Avg)")
     ax1.set_ylabel("Daily Inquiries", color="#2563eb")
@@ -455,7 +469,7 @@ def plot_regional_comparison(db: Session, output_path: Path):
 
 
 def plot_correlation_heatmap(df: pd.DataFrame, output_path: Path):
-    cols = [c for c in ["query_count", "wholesale_price", "retail_price", "diesel_price", "price_spread", "commodity_volatility_7d"] if c in df.columns]
+    cols = [c for c in ["query_count", "wholesale_price", "retail_price", "diesel_price", "price_spread", "commodity_volatility_7d"] if c in df.columns and df[c].dropna().nunique() > 1]
     if len(cols) < 2:
         return
     labels = {
@@ -475,11 +489,17 @@ def plot_correlation_heatmap(df: pd.DataFrame, output_path: Path):
     plt.close()
 
 
-def generate_all_charts(db: Session) -> List[str]:
+def generate_all_charts(
+    db: Session,
+    state: Optional[str] = None,
+    commodity: Optional[str] = None,
+    df: Optional[pd.DataFrame] = None
+) -> List[str]:
     """Generates all exploratory analytical charts and saves PNGs into outputs/charts/."""
     charts_dir = OUTPUTS_DIR / "charts"
     charts_dir.mkdir(parents=True, exist_ok=True)
-    df = build_analytical_dataset(db, export_csv=True)
+    if df is None:
+        df = build_analytical_dataset(db, state=state, commodity=commodity, export_csv=True)
     if df.empty:
         return []
 
@@ -496,16 +516,29 @@ def generate_all_charts(db: Session) -> List[str]:
     for func_plot, fname in chart_files:
         p = charts_dir / fname
         func_plot(df, p)
-        paths.append(str(p))
+        if p.exists():
+            paths.append(str(p))
 
     p_reg = charts_dir / "regional_queries.png"
     plot_regional_comparison(db, p_reg)
-    paths.append(str(p_reg))
+    if p_reg.exists():
+        paths.append(str(p_reg))
 
     return paths
 
 
-def generate_summary_report(db: Session) -> Dict[str, Any]:
+def generate_summary_report(
+    db: Session,
+    state: Optional[str] = None,
+    commodity: Optional[str] = None,
+    horizon_days: int = 14,
+    shock_threshold: float = 1.0,
+    df: Optional[pd.DataFrame] = None,
+    fc: Optional[Dict[str, Any]] = None,
+    hyp_data: Optional[Dict[str, Any]] = None,
+    charts: Optional[List[str]] = None,
+    tables: Optional[Dict[str, str]] = None
+) -> Dict[str, Any]:
     """
     Compiles a complete, readable markdown research report in outputs/reports/summary_report.md.
     Contains descriptive statistics, hypothesis test breakdowns, forecasting metrics,
@@ -517,14 +550,19 @@ def generate_summary_report(db: Session) -> Dict[str, Any]:
     reports_dir = OUTPUTS_DIR / "reports"
     reports_dir.mkdir(parents=True, exist_ok=True)
 
-    df = build_analytical_dataset(db, export_csv=True)
+    if df is None:
+        df = build_analytical_dataset(db, state=state, commodity=commodity, export_csv=True)
     quality = get_data_quality_report(db, df)
     stats_data = get_descriptive_summary(df)
     corrs = get_correlations(df)
-    hyp_data = run_hypothesis_tests(df)
-    fc = generate_forecast(db, horizon_days=14, use_sarimax=True)
-    charts = generate_all_charts(db)
-    tables = save_analysis_tables(df, db)
+    if hyp_data is None:
+        hyp_data = run_hypothesis_tests(df, diesel_shock_threshold_pct=shock_threshold)
+    if fc is None:
+        fc = generate_forecast(db, state=state, commodity=commodity, horizon_days=horizon_days, use_sarimax=True)
+    if charts is None:
+        charts = generate_all_charts(db, state=state, commodity=commodity, df=df)
+    if tables is None:
+        tables = save_analysis_tables(df, db, diesel_shock_threshold_pct=shock_threshold)
 
     report_path = reports_dir / "summary_report.md"
 

@@ -44,15 +44,15 @@ def run_imports(args):
                 return
 
             print(f"Importing synthetic KCC dataset: {kcc_path.name}")
-            res_kcc = import_kcc_csv(kcc_path, db, filename=kcc_path.name, is_synthetic=True)
+            res_kcc = import_kcc_csv(kcc_path, db, filename=kcc_path.name, is_synthetic=True, replace=args.replace)
             print(f"  Accepted: {res_kcc['accepted_rows']}, Rejected: {res_kcc['rejected_rows']}, Duplicates: {res_kcc['duplicate_rows']}")
 
             print(f"Importing synthetic Commodity dataset: {comm_path.name}")
-            res_comm = import_commodity_csv(comm_path, db, filename=comm_path.name, is_synthetic=True)
+            res_comm = import_commodity_csv(comm_path, db, filename=comm_path.name, is_synthetic=True, replace=args.replace)
             print(f"  Accepted: {res_comm['accepted_rows']}, Rejected: {res_comm['rejected_rows']}, Duplicates: {res_comm['duplicate_rows']}")
 
             print(f"Importing synthetic Fuel dataset: {fuel_path.name}")
-            res_fuel = import_fuel_csv(fuel_path, db, filename=fuel_path.name, is_synthetic=True)
+            res_fuel = import_fuel_csv(fuel_path, db, filename=fuel_path.name, is_synthetic=True, replace=args.replace)
             print(f"  Accepted: {res_fuel['accepted_rows']}, Rejected: {res_fuel['rejected_rows']}, Duplicates: {res_fuel['duplicate_rows']}")
 
             print("\n[SUCCESS] All demo datasets imported successfully!")
@@ -62,19 +62,19 @@ def run_imports(args):
         if args.kcc:
             path = Path(args.kcc)
             print(f"Importing KCC file: {path}")
-            res = import_kcc_csv(path, db, filename=path.name, is_synthetic=args.synthetic)
+            res = import_kcc_csv(path, db, filename=path.name, is_synthetic=args.synthetic, replace=args.replace)
             print(f"Result: {res['status']} | Accepted: {res['accepted_rows']} | Rejected: {res['rejected_rows']}")
 
         if args.commodity:
             path = Path(args.commodity)
             print(f"Importing Commodity file: {path}")
-            res = import_commodity_csv(path, db, filename=path.name, is_synthetic=args.synthetic)
+            res = import_commodity_csv(path, db, filename=path.name, is_synthetic=args.synthetic, replace=args.replace)
             print(f"Result: {res['status']} | Accepted: {res['accepted_rows']} | Rejected: {res['rejected_rows']}")
 
         if args.fuel:
             path = Path(args.fuel)
             print(f"Importing Fuel file: {path}")
-            res = import_fuel_csv(path, db, filename=path.name, is_synthetic=args.synthetic)
+            res = import_fuel_csv(path, db, filename=path.name, is_synthetic=args.synthetic, replace=args.replace)
             print(f"Result: {res['status']} | Accepted: {res['accepted_rows']} | Rejected: {res['rejected_rows']}")
 
     finally:
@@ -88,6 +88,7 @@ def main():
     parser.add_argument("--commodity", type=str, help="Path to Mandi commodity price CSV file")
     parser.add_argument("--fuel", type=str, help="Path to Diesel fuel price CSV file")
     parser.add_argument("--synthetic", action="store_true", help="Mark imported records as synthetic")
+    parser.add_argument("--replace", action="store_true", help="Replace existing records in target table instead of appending")
     parser.add_argument("--status", action="store_true", help="Print current database summary status")
 
     args = parser.parse_args()

@@ -44,7 +44,12 @@ def run_full_pipeline(
     commodity: str = None,
     horizon_days: int = 14,
     shock_threshold: float = 1.0,
-    force_generate: bool = False
+    force_generate: bool = False,
+    kcc_file: str = None,
+    commodity_file: str = None,
+    fuel_file: str = None,
+    replace: bool = False,
+    is_synthetic: bool = False
 ):
     print("=" * 72)
     print("       AGRISTRESS ANALYTICS — END-TO-END RESEARCH PIPELINE")
@@ -53,41 +58,68 @@ def run_full_pipeline(
     print(f"Outputs Folder:    {OUTPUTS_DIR}")
 
     # -------------------------------------------------------------
-    # Step 1: Database Initialization
+    # Step 1: Database Initialization & Data Loading
     # -------------------------------------------------------------
     print("\n[PHASE 1/5] Database Verification & Table Initialization...")
-    if force_generate:
+    if force_generate or (replace and not (kcc_file or commodity_file or fuel_file)):
         print("  -> Dropping existing tables for clean re-import...")
         Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
 
     try:
-        status = get_dataset_status(db)
-        needs_import = (
-            force_generate
-            or not status["ready_for_analysis"]
-            or status["datasets"]["kcc"]["total_records"] < 30
-        )
+        custom_inputs_supplied = bool(kcc_file or commodity_file or fuel_file)
 
-        if needs_import:
-            print("  -> Generating deterministic synthetic demonstration dataset...")
-            generate_synthetic_data(seed=42, days=730)
+        # 1A. Import custom user-supplied CSV files if specified
+        if custom_inputs_supplied:
+            print("  -> Importing user-supplied custom CSV datasets...")
+            if kcc_file:
+                p_kcc = Path(kcc_file)
+                print(f"     Loading KCC: {p_kcc} (replace={replace}, synthetic={is_synthetic})")
+                res = import_kcc_csv(p_kcc, db, filename=p_kcc.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
-            synthetic_dir = DATA_DIR / "synthetic"
-            print("  -> Importing synthetic KCC queries...")
-            res_kcc = import_kcc_csv(synthetic_dir / "synthetic_kcc_queries.csv", db, filename="synthetic_kcc_queries.csv", is_synthetic=True)
-            print(f"     Accepted: {res_kcc['accepted_rows']:,} | Duplicates: {res_kcc['duplicate_rows']:,}")
+            if commodity_file:
+                p_comm = Path(commodity_file)
+                print(f"     Loading Commodity: {p_comm} (replace={replace}, synthetic={is_synthetic})")
+                res = import_commodity_csv(p_comm, db, filename=p_comm.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
-            print("  -> Importing synthetic Mandi commodity prices...")
-            res_comm = import_commodity_csv(synthetic_dir / "synthetic_commodity_prices.csv", db, filename="synthetic_commodity_prices.csv", is_synthetic=True)
-            print(f"     Accepted: {res_comm['accepted_rows']:,} | Duplicates: {res_comm['duplicate_rows']:,}")
-
-            print("  -> Importing synthetic Retail diesel fuel prices...")
-            res_fuel = import_fuel_csv(synthetic_dir / "synthetic_fuel_prices.csv", db, filename="synthetic_fuel_prices.csv", is_synthetic=True)
-            print(f"     Accepted: {res_fuel['accepted_rows']:,} | Duplicates: {res_fuel['duplicate_rows']:,}")
+            if fuel_file:
+                p_fuel = Path(fuel_file)
+                print(f"     Loading Fuel: {p_fuel} (replace={replace}, synthetic={is_synthetic})")
+                res = import_fuel_csv(p_fuel, db, filename=p_fuel.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
             status = get_dataset_status(db)
+
+        # 1B. Fall back to synthetic demonstration generator only if requested or db is empty
+        else:
+            status = get_dataset_status(db)
+            needs_import = (
+                force_generate
+                or not status["ready_for_analysis"]
+                or status["datasets"]["kcc"]["total_records"] < 30
+            )
+
+            if needs_import:
+                print("  -> Generating deterministic synthetic demonstration dataset...")
+                generate_synthetic_data(seed=42, days=730)
+
+                synthetic_dir = DATA_DIR / "synthetic"
+                print("  -> Importing synthetic KCC queries...")
+                res_kcc = import_kcc_csv(synthetic_dir / "synthetic_kcc_queries.csv", db, filename="synthetic_kcc_queries.csv", is_synthetic=True, replace=True)
+                print(f"     Accepted: {res_kcc['accepted_rows']:,} | Duplicates: {res_kcc['duplicate_rows']:,}")
+
+                print("  -> Importing synthetic Mandi commodity prices...")
+                res_comm = import_commodity_csv(synthetic_dir / "synthetic_commodity_prices.csv", db, filename="synthetic_commodity_prices.csv", is_synthetic=True, replace=True)
+                print(f"     Accepted: {res_comm['accepted_rows']:,} | Duplicates: {res_comm['duplicate_rows']:,}")
+
+                print("  -> Importing synthetic Retail diesel fuel prices...")
+                res_fuel = import_fuel_csv(synthetic_dir / "synthetic_fuel_prices.csv", db, filename="synthetic_fuel_prices.csv", is_synthetic=True, replace=True)
+                print(f"     Accepted: {res_fuel['accepted_rows']:,} | Duplicates: {res_fuel['duplicate_rows']:,}")
+
+                status = get_dataset_status(db)
 
         print(f"  [OK] Database Ready: {status['status']}")
         for name, info in status["datasets"].items():
@@ -113,7 +145,7 @@ def run_full_pipeline(
         for stat in summary["descriptive_statistics"]:
             print(f"  * {stat['variable']:<25}: Mean = {stat['mean']:<8} Std = {stat['std']:<8} [Min: {stat['min']}, Max: {stat['max']}]")
 
-        tables = save_analysis_tables(df, db)
+        tables = save_analysis_tables(df, db, diesel_shock_threshold_pct=shock_threshold)
         print(f"  [OK] Exported {len(tables)} result tables to outputs/tables/:")
         for k, v in tables.items():
             print(f"       - {Path(v).name}")
@@ -122,7 +154,7 @@ def run_full_pipeline(
         # Step 4: Exploratory Visualizations & Econometric Hypothesis Testing
         # -------------------------------------------------------------
         print("\n[PHASE 4/5] Generating Visualizations & Running Hypothesis Tests...")
-        charts = generate_all_charts(db)
+        charts = generate_all_charts(db, state=state, commodity=commodity, df=df)
         print(f"  [OK] Generated {len(charts)} exploratory charts in outputs/charts/:")
         for c in charts:
             print(f"       - {Path(c).name}")
@@ -151,7 +183,18 @@ def run_full_pipeline(
         print("       - Charts Saved: outputs/charts/forecast_evaluation.png & actual_vs_predicted.png")
         print("       - Tables Saved: outputs/forecasts/forecast_predictions.csv & forecast_evaluation_metrics.csv")
 
-        rep = generate_summary_report(db)
+        rep = generate_summary_report(
+            db,
+            state=state,
+            commodity=commodity,
+            horizon_days=horizon_days,
+            shock_threshold=shock_threshold,
+            df=df,
+            fc=fc,
+            hyp_data=hyp,
+            charts=charts,
+            tables=tables
+        )
         print(f"\n  [OK] Full Research Summary Report Generated:")
         print(f"       -> {rep['report_path']}")
 
@@ -172,21 +215,41 @@ def main():
   python run_pipeline.py
   python run_pipeline.py --generate-data
   python run_pipeline.py --state Maharashtra --commodity Onion --horizon 21
+  python run_pipeline.py --kcc my_kcc.csv --commodity-file my_mandi.csv --fuel my_fuel.csv --replace
 """
     )
     parser.add_argument("--generate-data", action="store_true", help="Force regenerate synthetic demo data and re-import into database")
+    parser.add_argument("--kcc", type=str, default=None, help="Path to custom KCC query CSV file")
+    parser.add_argument("--commodity-file", "--commodity-csv", dest="commodity_file", type=str, default=None, help="Path to custom Mandi commodity price CSV file")
+    parser.add_argument("--fuel", type=str, default=None, help="Path to custom Diesel fuel price CSV file")
+    parser.add_argument("--replace", action="store_true", help="Replace existing records in database before importing custom data")
+    parser.add_argument("--synthetic", action="store_true", help="Mark custom imported data as synthetic (default: real operational)")
     parser.add_argument("--state", type=str, default=None, help="Filter by state (e.g., 'Maharashtra', 'Punjab')")
     parser.add_argument("--commodity", type=str, default=None, help="Filter by commodity (e.g., 'Onion', 'Wheat', 'Tomato')")
     parser.add_argument("--horizon", type=int, default=14, help="Forecast horizon in days (default: 14)")
     parser.add_argument("--shock-threshold", type=float, default=1.0, help="Diesel percentage shock threshold (default: 1.0%%)")
 
     args = parser.parse_args()
+
+    # If user provided a CSV path to --commodity instead of a commodity name, handle gracefully
+    commodity_filter = args.commodity
+    comm_file = args.commodity_file
+    if commodity_filter and commodity_filter.lower().endswith(".csv"):
+        if not comm_file:
+            comm_file = commodity_filter
+            commodity_filter = None
+
     run_full_pipeline(
         state=args.state,
-        commodity=args.commodity,
+        commodity=commodity_filter,
         horizon_days=args.horizon,
         shock_threshold=args.shock_threshold,
-        force_generate=args.generate_data
+        force_generate=args.generate_data,
+        kcc_file=args.kcc,
+        commodity_file=comm_file,
+        fuel_file=args.fuel,
+        replace=args.replace,
+        is_synthetic=args.synthetic
     )
 
 

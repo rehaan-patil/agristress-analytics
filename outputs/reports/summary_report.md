@@ -1,6 +1,6 @@
 # AgriStress Analytics — Comprehensive Research Summary Report
 
-**Date Generated:** 2026-10-20 04:35:15 UTC  
+**Date Generated:** 2026-10-20 10:43:10 UTC  
 **Research Topic:** Econometric and Spatial-Temporal Analysis of Farmer Information Demand: Modeling Kisan Call Centre (KCC) Query Influx Against Commodity Price Spreads and Fuel Inflation Shocks to Forecast Agricultural Advisory Stress  
 **Data Provenance:** SYNTHETIC DEMONSTRATION DATASET (Offline Development & Testing)  
 
@@ -20,7 +20,7 @@ This project models daily farmer information demand against key economic and inp
 
 ## 2. Dataset Coverage, Provenance & Quality
 
-- **Sample Date Range:** 2024-01-01 00:00:00 to 2025-12-30 00:00:00
+- **Sample Date Range:** 2024-01-01 to 2025-12-30
 - **Total Calendar Days:** 730
 - **Observed Query Days:** 730
 - **Unrecorded / Zero Query Days:** 0 (0.0%)
@@ -37,11 +37,11 @@ This project models daily farmer information demand against key economic and inp
 | Variable | Count | Mean | Std Dev | Min | Median | Max | Units |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
 | `query_count` | 730 | 237.85 | 93.54 | 42.00 | 235.50 | 431.00 | Calls / Day |
-| `wholesale_price` | 730 | 1797.96 | 183.67 | 1430.43 | 1824.18 | 2147.61 | INR / Quintal |
-| `retail_price` | 730 | 2427.25 | 247.95 | 1931.08 | 2462.64 | 2899.28 | INR / Quintal |
+| `wholesale_price` | 730 | 2133.81 | 152.07 | 1765.73 | 2132.48 | 2434.80 | INR / Quintal |
+| `retail_price` | 730 | 2807.40 | 205.78 | 2336.26 | 2787.71 | 3253.71 | INR / Quintal |
 | `diesel_price` | 730 | 102.53 | 5.29 | 90.50 | 104.50 | 110.50 | INR / Litre |
-| `price_spread` | 730 | 629.29 | 64.28 | 500.65 | 638.46 | 751.67 | INR / Quintal |
-| `commodity_volatility_7d` | 729 | 16.98 | 7.68 | 3.03 | 15.66 | 49.62 | INR (7D Std) |
+| `price_spread` | 730 | 673.59 | 66.12 | 509.11 | 667.34 | 854.49 | INR / Quintal |
+| `commodity_volatility_7d` | 729 | 20.17 | 8.32 | 3.83 | 18.72 | 57.65 | INR (7D Std) |
 
 ---
 
@@ -49,10 +49,10 @@ This project models daily farmer information demand against key economic and inp
 
 | Variable Pair | Pearson $r$ | Spearman $\rho$ | Sample Size ($N$) | Interpretation |
 | :--- | :---: | :---: | :---: | :--- |
-| KCC Demand vs Wholesale Commodity Price | -0.2109 | -0.2222 | 730 | Weak correlation |
-| KCC Demand vs Commodity Price Daily Change | 0.0053 | -0.0072 | 729 | Weak correlation |
-| KCC Demand vs 7-Day Commodity Price Volatility | 0.0461 | 0.0218 | 729 | Weak correlation |
-| KCC Demand vs Wholesale-Retail Price Spread | -0.2109 | -0.2222 | 730 | Weak correlation |
+| KCC Demand vs Wholesale Commodity Price | 0.2307 | 0.2115 | 730 | Weak correlation |
+| KCC Demand vs Commodity Price Daily Change | 0.0108 | 0.0273 | 729 | Weak correlation |
+| KCC Demand vs 7-Day Commodity Price Volatility | -0.0395 | -0.0330 | 729 | Weak correlation |
+| KCC Demand vs Wholesale-Retail Price Spread | 0.1593 | 0.1587 | 730 | Weak correlation |
 | KCC Demand vs Diesel Price Level | 0.3096 | 0.3011 | 730 | Weak correlation |
 | KCC Demand vs Diesel Daily Price Change | 0.0585 | 0.0556 | 729 | Weak correlation |
 | KCC Demand vs 7-Day Lagged Diesel Price Change | 0.0565 | 0.0584 | 722 | Weak correlation |
@@ -66,9 +66,9 @@ This project models daily farmer information demand against key economic and inp
 - **Null Hypothesis ($H_0$):** Daily commodity percentage changes have no linear correlation with farmer query volume (r = 0).
 - **Alternative Hypothesis ($H_1$):** Daily commodity percentage changes are linearly correlated with farmer query volume (r != 0).
 - **Statistical Test Used:** Pearson Linear Correlation Test ($N = 729$)
-- **Test Statistic:** `0.006` | **p-value:** `0.87141` | **Significance Level ($\\alpha$):** 0.05
+- **Test Statistic:** `0.0108` | **p-value:** `0.77005` | **Significance Level ($\\alpha$):** 0.05
 - **Outcome:** **FAIL TO REJECT NULL HYPOTHESIS**
-- **Plain English Verdict:** Fail to reject null hypothesis (r=0.0060, p=0.8714)
+- **Plain English Verdict:** Fail to reject null hypothesis (r=0.0108, p=0.7701)
 - **Statistical Assumptions:** Assumes linear relationship and bivariate normality. Time-series autocorrelation can artificially narrow standard errors.
 - **Research Limitations:** Linear correlation does not imply causality; price shocks may have delayed non-linear effects not captured by contemporaneous Pearson r.
 
@@ -88,9 +88,9 @@ This project models daily farmer information demand against key economic and inp
 - **Null Hypothesis ($H_0$):** There is no monotonic rank association between price spread and KCC query demand (rho = 0).
 - **Alternative Hypothesis ($H_1$):** Price spread and KCC query demand are monotonically associated (rho != 0).
 - **Statistical Test Used:** Spearman Rank-Order Correlation Test ($N = 730$)
-- **Test Statistic:** `-0.2222` | **p-value:** `0.0` | **Significance Level ($\\alpha$):** 0.05
+- **Test Statistic:** `0.1587` | **p-value:** `2e-05` | **Significance Level ($\\alpha$):** 0.05
 - **Outcome:** **REJECT NULL HYPOTHESIS**
-- **Plain English Verdict:** Reject null hypothesis (rho=-0.2222, p=0.0000)
+- **Plain English Verdict:** Reject null hypothesis (rho=0.1587, p=0.0000)
 - **Statistical Assumptions:** Monotonic relationship; does not assume linear bivariate normality.
 - **Research Limitations:** Wholesale-retail spread is observable only where matching commodity retail observations exist.
 

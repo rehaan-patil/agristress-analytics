@@ -67,6 +67,35 @@ def generate_synthetic_data(seed: int = 42, days: int = 730):
                 })
     pd.DataFrame(kcc_rows).to_csv(synthetic_dir / "synthetic_kcc_queries.csv", index=False)
 
+    # 2. Mandi Commodity Wholesale & Retail Prices
+    commodity_rows = []
+    prices = {"Onion": 2200.0, "Wheat": 2400.0, "Tomato": 1800.0}
+    for d in dates:
+        if d.weekday() == 6:  # Mandis closed on Sundays
+            continue
+        d_str = d.strftime("%Y-%m-%d")
+        for comm in commodities:
+            # Mean-reverting random walk for price
+            prices[comm] = max(700.0, prices[comm] + np.random.normal(0, 30.0))
+            w_price = round(prices[comm], 2)
+            margin = 1.30 + np.random.uniform(-0.05, 0.08)
+            r_price = round(w_price * margin, 2)
+            for reg in regions:
+                diff = np.random.uniform(-50.0, 50.0)
+                reg_w = round(max(500.0, w_price + diff), 2)
+                reg_r = round(reg_w * margin, 2)
+                commodity_rows.append({
+                    "observation_date": d_str,
+                    "state": reg["state"],
+                    "district": reg["district"],
+                    "market": reg["market"],
+                    "commodity": comm,
+                    "wholesale_price": reg_w,
+                    "retail_price": reg_r,
+                    "arrival_quantity": round(float(np.random.gamma(5.0, 20.0)), 2)
+                })
+    pd.DataFrame(commodity_rows).to_csv(synthetic_dir / "synthetic_commodity_prices.csv", index=False)
+
     print(f"Generated synthetic demo files in {synthetic_dir}")
 
 

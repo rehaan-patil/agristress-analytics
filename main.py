@@ -9,6 +9,7 @@ Executes the complete local econometric analysis and forecasting pipeline:
 Optional flags:
     python main.py --generate-data
     python main.py --state Maharashtra --commodity Onion --horizon 21
+    python main.py --kcc data/my_kcc.csv --commodity-file data/my_mandi.csv --fuel data/my_fuel.csv --replace
 """
 from run_pipeline import main
 

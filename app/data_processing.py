@@ -20,9 +20,79 @@ def check_missing_columns(df: pd.DataFrame, required: List[str]) -> List[str]:
     return [col for col in required if col.lower() not in existing]
 
 
+COLUMN_SYNONYMS = {
+    # Dates
+    "arrival_date": "observation_date",
+    "createdon": "observation_date",
+    "created_on": "observation_date",
+    "created_date": "observation_date",
+    "call_date": "observation_date",
+    "date": "observation_date",
+    "reported_date": "observation_date",
+    "record_date": "observation_date",
+
+    # State / District / Market
+    "statename": "state",
+    "state_name": "state",
+    "districtname": "district",
+    "district_name": "district",
+    "marketname": "market",
+    "market_name": "market",
+    "mandi": "market",
+    "mandi_name": "market",
+
+    # KCC Inquiries
+    "calls": "query_count",
+    "call_count": "query_count",
+    "queries": "query_count",
+    "inquiries": "query_count",
+    "total_queries": "query_count",
+    "querytype": "query_type",
+    "category": "query_type",
+    "sector": "query_type",
+
+    # Commodity Prices & Arrivals
+    "commodity_name": "commodity",
+    "crop": "commodity",
+    "modal_price": "wholesale_price",
+    "modal_price_(rs./quintal)": "wholesale_price",
+    "modal_price_rs_quintal": "wholesale_price",
+    "modal_x0020_price": "wholesale_price",
+    "modal_price_(rs/qtl)": "wholesale_price",
+    "modal_price_rs_per_qtl": "wholesale_price",
+    "price": "wholesale_price",
+    "retail_price_(rs./quintal)": "retail_price",
+    "retail_price_(rs/qtl)": "retail_price",
+    "arrivals": "arrival_quantity",
+    "arrivals_(tonnes)": "arrival_quantity",
+    "arrivals_in_tonnes": "arrival_quantity",
+    "arrival_tonnes": "arrival_quantity",
+
+    # Fuel Prices
+    "diesel": "diesel_price",
+    "diesel_retail_price": "diesel_price",
+    "diesel_price_(rs/litre)": "diesel_price",
+    "diesel_(rs./litre)": "diesel_price",
+    "diesel_rs_litre": "diesel_price",
+    "fuel_price": "diesel_price",
+}
+
+
 def standardize_column_names(df: pd.DataFrame) -> pd.DataFrame:
     """Makes column names lowercase with underscores and no surrounding spaces."""
     renamed = {c: str(c).strip().lower().replace(" ", "_").replace("-", "_") for c in df.columns}
+    return df.rename(columns=renamed)
+
+
+def apply_column_synonyms(df: pd.DataFrame) -> pd.DataFrame:
+    """Maps common government and operational dataset column variations to standard schema names."""
+    renamed = {}
+    for col in df.columns:
+        c_clean = str(col).strip().lower().replace(" ", "_").replace("-", "_")
+        if c_clean in COLUMN_SYNONYMS:
+            renamed[col] = COLUMN_SYNONYMS[c_clean]
+        elif c_clean != col:
+            renamed[col] = c_clean
     return df.rename(columns=renamed)
 
 
@@ -31,10 +101,16 @@ def safe_parse_dates(series: pd.Series) -> pd.Series:
     return pd.to_datetime(series, errors="coerce", format="mixed").dt.date
 
 
-def import_kcc_csv(file_or_path, db: Session, filename: str = "kcc_data.csv", is_synthetic: bool = False) -> Dict[str, Any]:
+def import_kcc_csv(
+    file_or_path,
+    db: Session,
+    filename: str = "kcc_data.csv",
+    is_synthetic: bool = False,
+    replace: bool = False
+) -> Dict[str, Any]:
     """Reads and validates KCC queries CSV and saves records to database."""
     try:
-        df = standardize_column_names(pd.read_csv(file_or_path))
+        df = apply_column_synonyms(standardize_column_names(pd.read_csv(file_or_path)))
     except Exception as e:
         return {"status": "FAILED", "filename": filename, "total_rows": 0, "accepted_rows": 0, "rejected_rows": 0, "duplicate_rows": 0, "errors": [str(e)]}
 
@@ -47,19 +123,33 @@ def import_kcc_csv(file_or_path, db: Session, filename: str = "kcc_data.csv", is
 
     if "query_count" not in df.columns:
         df["query_count"] = 1
+        raw_log = True
     else:
         df["query_count"] = pd.to_numeric(df["query_count"], errors="coerce")
+        raw_log = False
 
     df["parsed_date"] = safe_parse_dates(df["observation_date"])
     valid = df[df["parsed_date"].notna() & df["state"].notna() & (df["query_count"] >= 0)].copy()
     rejected = len(df) - len(valid)
 
-    # Remove duplicates on date, state, and category
-    subset = ["parsed_date", "state"]
+    group_cols = ["parsed_date", "state"]
+    if "district" in valid.columns:
+        group_cols.append("district")
     if "query_type" in valid.columns:
-        subset.append("query_type")
-    valid = valid.drop_duplicates(subset=subset)
-    duplicates = len(df) - rejected - len(valid)
+        group_cols.append("query_type")
+
+    if raw_log:
+        agg_df = valid.groupby(group_cols, as_index=False, dropna=False)["query_count"].sum()
+        duplicates = len(valid) - len(agg_df)
+        valid = agg_df
+    else:
+        before_dedup = len(valid)
+        valid = valid.drop_duplicates(subset=group_cols)
+        duplicates = before_dedup - len(valid)
+
+    if replace:
+        db.query(KCCObservation).delete()
+        db.commit()
 
     # Save to database
     objs = [
@@ -81,10 +171,16 @@ def import_kcc_csv(file_or_path, db: Session, filename: str = "kcc_data.csv", is
     return {"status": "SUCCESS" if objs else "EMPTY", "dataset_type": "kcc", "filename": filename, "total_rows": len(df), "accepted_rows": len(objs), "rejected_rows": rejected, "duplicate_rows": duplicates, "errors": []}
 
 
-def import_commodity_csv(file_or_path, db: Session, filename: str = "commodity_prices.csv", is_synthetic: bool = False) -> Dict[str, Any]:
+def import_commodity_csv(
+    file_or_path,
+    db: Session,
+    filename: str = "commodity_prices.csv",
+    is_synthetic: bool = False,
+    replace: bool = False
+) -> Dict[str, Any]:
     """Reads, cleans, and saves wholesale commodity price records."""
     try:
-        df = standardize_column_names(pd.read_csv(file_or_path))
+        df = apply_column_synonyms(standardize_column_names(pd.read_csv(file_or_path)))
     except Exception as e:
         return {"status": "FAILED", "filename": filename, "total_rows": 0, "accepted_rows": 0, "rejected_rows": 0, "duplicate_rows": 0, "errors": [str(e)]}
 
@@ -105,6 +201,10 @@ def import_commodity_csv(file_or_path, db: Session, filename: str = "commodity_p
 
     valid = valid.drop_duplicates(subset=["parsed_date", "state", "commodity"])
     duplicates = len(df) - rejected - len(valid)
+
+    if replace:
+        db.query(CommodityObservation).delete()
+        db.commit()
 
     objs = [
         CommodityObservation(
@@ -128,10 +228,16 @@ def import_commodity_csv(file_or_path, db: Session, filename: str = "commodity_p
     return {"status": "SUCCESS" if objs else "EMPTY", "dataset_type": "commodity", "filename": filename, "total_rows": len(df), "accepted_rows": len(objs), "rejected_rows": rejected, "duplicate_rows": duplicates, "errors": []}
 
 
-def import_fuel_csv(file_or_path, db: Session, filename: str = "fuel_prices.csv", is_synthetic: bool = False) -> Dict[str, Any]:
+def import_fuel_csv(
+    file_or_path,
+    db: Session,
+    filename: str = "fuel_prices.csv",
+    is_synthetic: bool = False,
+    replace: bool = False
+) -> Dict[str, Any]:
     """Reads and saves retail diesel fuel prices."""
     try:
-        df = standardize_column_names(pd.read_csv(file_or_path))
+        df = apply_column_synonyms(standardize_column_names(pd.read_csv(file_or_path)))
     except Exception as e:
         return {"status": "FAILED", "filename": filename, "total_rows": 0, "accepted_rows": 0, "rejected_rows": 0, "duplicate_rows": 0, "errors": [str(e)]}
 
@@ -151,6 +257,10 @@ def import_fuel_csv(file_or_path, db: Session, filename: str = "fuel_prices.csv"
     subset = ["parsed_date", "state"] if "state" in valid.columns else ["parsed_date"]
     valid = valid.drop_duplicates(subset=subset)
     duplicates = len(df) - rejected - len(valid)
+
+    if replace:
+        db.query(FuelObservation).delete()
+        db.commit()
 
     objs = [
         FuelObservation(
@@ -241,8 +351,8 @@ def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> D
     quality_status = "GOOD" if missing_pct < 20 else ("ACCEPTABLE" if missing_pct < 40 else "POOR")
 
     return {
-        "sample_start": str(min_date),
-        "sample_end": str(max_date),
+        "sample_start": str(pd.to_datetime(min_date).date()) if min_date is not None else None,
+        "sample_end": str(pd.to_datetime(max_date).date()) if max_date is not None else None,
         "total_calendar_days": total_days,
         "observed_query_days": observed_days,
         "zero_or_unrecorded_days": zero_query_days,

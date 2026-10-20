@@ -138,3 +138,42 @@ def test_build_analytical_dataset_weekly_freq(in_memory_db):
     assert "query_count" in df_weekly.columns
     assert df_weekly["query_count"].sum() == 140
 
+
+def test_column_synonyms_government_schemas(in_memory_db):
+    # Tests Agmarknet and data.gov.in column alias support
+    mandi_csv = io.StringIO("""Arrival_Date,State_Name,District_Name,Market_Name,Commodity_Name,Modal_Price,Arrivals (Tonnes)
+2023-06-01,Karnataka,Kolar,Kolar APMC,Tomato,2500,45.5
+2023-06-02,Karnataka,Kolar,Kolar APMC,Tomato,2600,50.0
+""")
+    res = import_commodity_csv(mandi_csv, in_memory_db, filename="agmarknet_test.csv")
+    assert res["status"] == "SUCCESS"
+    assert res["accepted_rows"] == 2
+
+
+def test_invalid_data_rejection(in_memory_db):
+    # Tests rejection of negative prices, invalid dates, and zero prices
+    bad_fuel = io.StringIO("""observation_date,state,diesel_price
+2023-06-01,Karnataka,88.5
+2023-06-02,Karnataka,-15.0
+2023-06-03,Karnataka,0.0
+not-a-valid-date,Karnataka,89.0
+""")
+    res = import_fuel_csv(bad_fuel, in_memory_db, filename="bad_fuel.csv")
+    assert res["status"] == "SUCCESS"
+    assert res["total_rows"] == 4
+    assert res["accepted_rows"] == 1  # Only 2023-06-01 is valid
+    assert res["rejected_rows"] == 3
+
+
+def test_import_replace_option(in_memory_db):
+    kcc_batch1 = io.StringIO("""observation_date,state,query_count\n2024-01-01,Maharashtra,10\n""")
+    import_kcc_csv(kcc_batch1, in_memory_db)
+    
+    kcc_batch2 = io.StringIO("""observation_date,state,query_count\n2024-02-01,Punjab,50\n""")
+    import_kcc_csv(kcc_batch2, in_memory_db, replace=True)
+
+    status = get_data_quality_report(in_memory_db)
+    assert status["sample_start"] == "2024-02-01"
+    assert status["total_calendar_days"] == 1
+
+
