@@ -29,7 +29,3 @@ OUTPUTS_DIR.mkdir(parents=True, exist_ok=True)
 
 TABLES_DIR = OUTPUTS_DIR / "tables"
 FORECASTS_DIR = OUTPUTS_DIR / "forecasts"
-
-# Server configuration
-HOST = os.getenv("HOST", "0.0.0.0")
-PORT = int(os.getenv("PORT", 8000))

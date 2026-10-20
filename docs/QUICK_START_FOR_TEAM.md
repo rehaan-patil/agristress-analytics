@@ -1,6 +1,6 @@
 # AgriStress Analytics — Quick Start Guide for Teammates
 
-This guide provides the shortest practical path to set up, run, and demonstrate the AgriStress Analytics backend locally.
+This guide provides the shortest practical path to set up, run, and demonstrate the AgriStress Analytics local research project.
 
 ---
 
@@ -12,12 +12,11 @@ This guide provides the shortest practical path to set up, run, and demonstrate 
 python -m venv .venv
 .venv\Scripts\activate
 
-# 2. Install dependencies & configure environment
+# 2. Install dependencies
 pip install -r requirements.txt
-copy .env.example .env
 
-# 3. Initialize SQLite database tables
-python scripts/init_db.py
+# 3. Run the complete analysis pipeline in one command
+python main.py
 ```
 
 ### Linux / macOS:
@@ -25,35 +24,37 @@ python scripts/init_db.py
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env
-python3 scripts/init_db.py
+python3 main.py
 ```
 
 ---
 
-## 2. Complete Local Demonstration (4 Steps)
+## 2. One-Command Complete Demonstration
 
 ```bash
-# Step 1: Generate reproducible demo data (seed=42, 730 days, 4 states)
-python scripts/generate_demo_data.py
+# Run the entire pipeline end-to-end
+python main.py
+```
 
-# Step 2: Ingest the CSV datasets into SQLite
-python scripts/import_data.py --all
+*This command automatically initializes the SQLite database, validates the data, computes descriptive statistics, saves CSV tables, generates 10 exploratory charts, runs econometric hypothesis tests, executes holdout-validated SARIMAX forecasting, and generates the complete markdown report.*
 
-# Step 3: Run the end-to-end analytical pipeline (generates 9 charts & summary report)
-python scripts/run_analysis.py
+Optional flags:
+```bash
+# Force regenerate synthetic demo data and re-import into a clean database:
+python main.py --generate-data
 
-# Step 4: Start the FastAPI local server
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+# Filter by state or commodity:
+python main.py --state Maharashtra --commodity Onion --horizon 21
 ```
 
 ---
 
-## 3. Where to View Outputs in VS Code
+## 3. Where to View Outputs
 
-- **Interactive Swagger API Docs:** Open browser to [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
-- **Visualizations (PNGs):** Open the [outputs/charts/](file:///d:/python-capstone/outputs/charts) folder in the VS Code file explorer.
 - **Markdown Research Report:** Open [outputs/reports/summary_report.md](file:///d:/python-capstone/outputs/reports/summary_report.md) and press `Ctrl + Shift + V`.
+- **Visualizations (PNGs):** View all 10 figures in [outputs/charts/](file:///d:/python-capstone/outputs/charts).
+- **Tabular Results (CSVs):** Inspect result tables in [outputs/tables/](file:///d:/python-capstone/outputs/tables).
+- **Forecast Predictions & Metrics:** Inspect predictions in [outputs/forecasts/](file:///d:/python-capstone/outputs/forecasts).
 - **Harmonized Dataset:** Inspect [data/processed/analytical_dataset.csv](file:///d:/python-capstone/data/processed/analytical_dataset.csv).
 
 ---
@@ -61,10 +62,10 @@ python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ## 4. Run the Test Suite
 
 ```bash
-python -m pytest -v
+python -m pytest
 ```
-All **26 tests** will execute and report passing in ~6 seconds.
+All **19 tests** will execute and report passing in ~5 seconds with zero warnings.
 
 ---
 
-*For detailed explanations of the mathematics, database schema, and architecture, refer to the full handover report: [docs/PROJECT_EXPLANATION_FOR_TEAM.md](file:///d:/python-capstone/docs/PROJECT_EXPLANATION_FOR_TEAM.md).*
+*For detailed explanations of the mathematics, database schema, and methodology, refer to [docs/PROJECT_EXPLANATION_FOR_TEAM.md](file:///d:/python-capstone/docs/PROJECT_EXPLANATION_FOR_TEAM.md) and [docs/METHODOLOGY.md](file:///d:/python-capstone/docs/METHODOLOGY.md).*
