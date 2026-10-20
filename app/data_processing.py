@@ -199,7 +199,10 @@ def import_commodity_csv(
     valid = df[df["parsed_date"].notna() & df["state"].notna() & df["commodity"].notna() & (df["wholesale_price"] > 0)].copy()
     rejected = len(df) - len(valid)
 
-    valid = valid.drop_duplicates(subset=["parsed_date", "state", "commodity"])
+    sub_cols = ["parsed_date", "state", "commodity"]
+    if "market" in valid.columns and valid["market"].notna().any():
+        sub_cols.append("market")
+    valid = valid.drop_duplicates(subset=sub_cols)
     duplicates = len(df) - rejected - len(valid)
 
     if replace:
@@ -308,7 +311,11 @@ def get_dataset_status(db: Session) -> Dict[str, Any]:
     return {"status": "READY" if ready else "INSUFFICIENT_DATA", "datasets": info, "ready_for_analysis": ready, "notes": notes}
 
 
-def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> Dict[str, Any]:
+def get_data_quality_report(
+    db: Session,
+    df: Optional[pd.DataFrame] = None,
+    provenance_type: Optional[str] = None
+) -> Dict[str, Any]:
     """
     Evaluates data coverage, missingness, and data provenance.
     Produces an understandable summary for research verification.
@@ -319,13 +326,37 @@ def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> D
     if df is None:
         df = build_analytical_dataset(db, export_csv=False)
 
+    if provenance_type is None:
+        if is_synth:
+            prov_type = "SYNTHETIC"
+            prov_label = "Synthetic Demonstration Data"
+            prov_note = "PROVENANCE: Data contains synthetic demonstration observations generated deterministically."
+        else:
+            prov_type = "UNVERIFIED"
+            prov_label = "Unverified / User-Supplied Data"
+            prov_note = "PROVENANCE: Data imported from local CSV files without independent verification."
+    elif provenance_type.upper() == "VERIFIED_REAL":
+        prov_type = "VERIFIED_REAL"
+        prov_label = "Verified Real-World Observations"
+        prov_note = "PROVENANCE: Verified real-world operational records imported from official sources."
+    elif provenance_type.upper() == "SYNTHETIC":
+        prov_type = "SYNTHETIC"
+        prov_label = "Synthetic Demonstration Data"
+        prov_note = "PROVENANCE: Data contains synthetic demonstration observations generated deterministically."
+    else:
+        prov_type = "UNVERIFIED"
+        prov_label = "Unverified / User-Supplied Data"
+        prov_note = "PROVENANCE: Data imported from local CSV files without independent verification."
+
     if df.empty:
         return {
             "total_calendar_days": 0,
             "observed_query_days": 0,
             "unrecorded_days": 0,
             "missingness_percentage": 0.0,
-            "is_synthetic": is_synth,
+            "is_synthetic": (prov_type == "SYNTHETIC"),
+            "provenance_type": prov_type,
+            "provenance_label": prov_label,
             "quality_status": "NO_DATA",
             "quality_notes": ["No records found in database."]
         }
@@ -338,13 +369,8 @@ def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> D
     observed_days = len(df) - zero_query_days
     missing_pct = round((zero_query_days / len(df)) * 100.0, 2) if len(df) > 0 else 0.0
 
-    notes = []
-    if is_synth:
-        notes.append("PROVENANCE: Data contains synthetic demonstration observations generated deterministically.")
-    else:
-        notes.append("PROVENANCE: Real operational data imported from official sources.")
-
-    notes.append(f"Mandi holiday / Sunday closures are forward-filled for price continuous continuity.")
+    notes = [prov_note]
+    notes.append("Mandi holiday / Sunday closures are forward-filled for price continuity.")
     if zero_query_days > 0:
         notes.append(f"{zero_query_days} days had 0 recorded queries (e.g., call centre closed on Sundays/holidays).")
 
@@ -357,7 +383,9 @@ def get_data_quality_report(db: Session, df: Optional[pd.DataFrame] = None) -> D
         "observed_query_days": observed_days,
         "zero_or_unrecorded_days": zero_query_days,
         "missingness_percentage": missing_pct,
-        "is_synthetic": is_synth,
+        "is_synthetic": (prov_type == "SYNTHETIC"),
+        "provenance_type": prov_type,
+        "provenance_label": prov_label,
         "quality_status": quality_status,
         "quality_notes": notes
     }

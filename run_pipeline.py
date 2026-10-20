@@ -13,6 +13,13 @@ import sys
 import argparse
 from pathlib import Path
 
+# Configure utf-8 console output for Windows cmd/powershell
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+
 # Ensure root directory is on Python path
 ROOT_DIR = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT_DIR))
@@ -50,7 +57,9 @@ def run_full_pipeline(
     commodity_file: str = None,
     fuel_file: str = None,
     replace: bool = False,
-    is_synthetic: bool = False
+    is_synthetic: bool = False,
+    verified_real: bool = False,
+    lang: str = "en"
 ):
     print("=" * 72)
     print("       AGRISTRESS ANALYTICS — END-TO-END RESEARCH PIPELINE")
@@ -70,26 +79,34 @@ def run_full_pipeline(
 
     try:
         custom_inputs_supplied = bool(kcc_file or commodity_file or fuel_file)
+        if is_synthetic or force_generate or not custom_inputs_supplied:
+            provenance_type = "SYNTHETIC"
+        elif verified_real:
+            provenance_type = "VERIFIED_REAL"
+        else:
+            provenance_type = "UNVERIFIED"
+
+        import_synth_flag = (provenance_type == "SYNTHETIC")
 
         # 1A. Import custom user-supplied CSV files if specified
         if custom_inputs_supplied:
-            print("  -> Importing user-supplied custom CSV datasets...")
+            print(f"  -> Importing user-supplied custom CSV datasets (Provenance: {provenance_type})...")
             if kcc_file:
                 p_kcc = Path(kcc_file)
-                print(f"     Loading KCC: {p_kcc} (replace={replace}, synthetic={is_synthetic})")
-                res = import_kcc_csv(p_kcc, db, filename=p_kcc.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Loading KCC: {p_kcc} (replace={replace}, synthetic={import_synth_flag})")
+                res = import_kcc_csv(p_kcc, db, filename=p_kcc.name, is_synthetic=import_synth_flag, replace=replace)
                 print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
             if commodity_file:
                 p_comm = Path(commodity_file)
-                print(f"     Loading Commodity: {p_comm} (replace={replace}, synthetic={is_synthetic})")
-                res = import_commodity_csv(p_comm, db, filename=p_comm.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Loading Commodity: {p_comm} (replace={replace}, synthetic={import_synth_flag})")
+                res = import_commodity_csv(p_comm, db, filename=p_comm.name, is_synthetic=import_synth_flag, replace=replace)
                 print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
             if fuel_file:
                 p_fuel = Path(fuel_file)
-                print(f"     Loading Fuel: {p_fuel} (replace={replace}, synthetic={is_synthetic})")
-                res = import_fuel_csv(p_fuel, db, filename=p_fuel.name, is_synthetic=is_synthetic, replace=replace)
+                print(f"     Loading Fuel: {p_fuel} (replace={replace}, synthetic={import_synth_flag})")
+                res = import_fuel_csv(p_fuel, db, filename=p_fuel.name, is_synthetic=import_synth_flag, replace=replace)
                 print(f"     Result: {res['status']} | Accepted: {res['accepted_rows']:,} | Rejected: {res['rejected_rows']:,}")
 
             status = get_dataset_status(db)
@@ -131,11 +148,12 @@ def run_full_pipeline(
         # -------------------------------------------------------------
         print("\n[PHASE 2/5] Building Aligned Analytical Time-Series & Quality Audit...")
         df = build_analytical_dataset(db, state=state, commodity=commodity, export_csv=True)
-        quality = get_data_quality_report(db, df)
+        quality = get_data_quality_report(db, df, provenance_type=provenance_type)
         print(f"  [OK] Constructed {len(df):,} harmonized daily records.")
         print(f"       Sample Range: {quality['sample_start']} to {quality['sample_end']}")
         print(f"       Observed Days: {quality['observed_query_days']} | Missing/Zero Query Days: {quality['zero_or_unrecorded_days']} ({quality['missingness_percentage']}%)")
-        print(f"       Data Quality: {quality['quality_status']} | Provenance: {'Synthetic' if quality['is_synthetic'] else 'Real'}")
+        print(f"       Data Quality: {quality['quality_status']} | Provenance: {quality['provenance_label']}")
+        print("       Exported -> data/processed/analytical_dataset.csv")
         print("       Exported -> data/processed/analytical_dataset.csv")
 
         # -------------------------------------------------------------
@@ -208,7 +226,9 @@ def run_full_pipeline(
             forecast_res=fc,
             state=state,
             commodity=commodity,
-            quality=quality
+            quality=quality,
+            db=db,
+            lang=lang
         )
         print(f"  [OK] Farmer Advisory Reports Generated:")
         print(f"       -> Markdown:   {advisory['report_md_path']}")
@@ -220,15 +240,20 @@ def run_full_pipeline(
         print("\n" + "-" * 72)
         print("             FARMER-FRIENDLY ADVISORY SUMMARY")
         print("-" * 72)
-        print(f"  Region:    {advisory['region']}")
-        print(f"  Commodity: {advisory['commodity']}")
-        print(f"  Situation: {advisory['price_headline']}")
-        print("\n  Recommended Next Steps:")
+        print(f"  Region:            {advisory['region']}")
+        print(f"  Commodity:         {advisory['commodity']}")
+        print(f"  Data Period:       {advisory['period']}")
+        print(f"  Data Freshness:    {advisory['freshness']['statement']}")
+        print(f"  Advisory Priority: {advisory['priority']}")
+        print(f"\n  Situation:")
+        print(f"    {advisory['price_headline']}")
+        print(f"\n  Recommended Next Steps:")
         for idx, step in enumerate(advisory["recommended_steps"], start=1):
             print(f"    {idx}. {step}")
-        if advisory.get("combined_alert"):
-            print(f"\n  [SPECIAL CAUTION] Simultaneous price drop and fuel hike detected!")
-        print(f"\n  Assistance: Call Kisan Call Centre (Toll-Free 1800-180-1551)")
+        if advisory.get("market_comparison_available"):
+            print(f"\n  Market Comparison: {advisory['market_comparison_count']} mandis evaluated in report table.")
+        print(f"\n  Assistance: Call Kisan Call Centre (Toll-Free 1800-180-1551, 6:00 AM - 10:00 PM)")
+        print(f"  Provenance: {advisory['provenance_label']}")
         print("-" * 72)
         print(f"\nTechnical Report: {rep['report_path']}")
         print(f"Farmer Advisory:  {advisory['report_md_path']}\n")
@@ -246,6 +271,7 @@ def main():
   python run_pipeline.py --generate-data
   python run_pipeline.py --state Maharashtra --commodity Onion --horizon 21
   python run_pipeline.py --kcc my_kcc.csv --commodity-file my_mandi.csv --fuel my_fuel.csv --replace
+  python run_pipeline.py --lang hi
 """
     )
     parser.add_argument("--generate-data", action="store_true", help="Force regenerate synthetic demo data and re-import into database")
@@ -253,11 +279,13 @@ def main():
     parser.add_argument("--commodity-file", "--commodity-csv", dest="commodity_file", type=str, default=None, help="Path to custom Mandi commodity price CSV file")
     parser.add_argument("--fuel", type=str, default=None, help="Path to custom Diesel fuel price CSV file")
     parser.add_argument("--replace", action="store_true", help="Replace existing records in database before importing custom data")
-    parser.add_argument("--synthetic", action="store_true", help="Mark custom imported data as synthetic (default: real operational)")
+    parser.add_argument("--synthetic", action="store_true", help="Mark custom imported data as synthetic demonstration data")
+    parser.add_argument("--verified-real", action="store_true", help="Mark custom imported data as verified real-world operational records")
     parser.add_argument("--state", type=str, default=None, help="Filter by state (e.g., 'Maharashtra', 'Punjab')")
     parser.add_argument("--commodity", type=str, default=None, help="Filter by commodity (e.g., 'Onion', 'Wheat', 'Tomato')")
     parser.add_argument("--horizon", type=int, default=14, help="Forecast horizon in days (default: 14)")
     parser.add_argument("--shock-threshold", type=float, default=1.0, help="Diesel percentage shock threshold (default: 1.0%%)")
+    parser.add_argument("--lang", type=str, default="en", choices=["en", "hi", "mr"], help="Language for farmer advisory ('en', 'hi', 'mr')")
 
     args = parser.parse_args()
 
@@ -279,7 +307,9 @@ def main():
         commodity_file=comm_file,
         fuel_file=args.fuel,
         replace=args.replace,
-        is_synthetic=args.synthetic
+        is_synthetic=args.synthetic,
+        verified_real=args.verified_real,
+        lang=args.lang
     )
 
 

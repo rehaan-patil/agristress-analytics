@@ -1,0 +1,38 @@
+========================================================================
+      किसान बाज़ार एवं सूचना सलाह (FARMER MARKET AND INFORMATION ADVISORY)
+========================================================================
+Region:             Multi-State Region (Overall Sample)
+Commodity:          Agricultural Produce (General)
+Data Period:        2023-01-01 to 2023-06-29
+Data Freshness:     [ऐतिहासिक आंकड़े] अंतिम दर्ज: 2023-06-29, 1209 दिन पूर्व। बाज़ार की स्थिति बदल चुकी हो सकती है। माल भेजने से पहले आज के स्थानीय भाव अवश्य जांचें।
+Advisory Priority:  निर्णय से पूर्व जांचें (Check before deciding)
+------------------------------------------------------------------------
+
+1. SITUATION IN ONE SENTENCE:
+  * दर्ज मंडियों में agricultural produce के थोक भाव में हाल ही में गिरावट आई है।
+    2023-06-23 से 2023-06-29 के बीच, थोक भाव औसतन ₹1097 प्रति क्विंटल रहे, जबकि पिछले 7 दिनों (2023-06-16 से 2023-06-22) में औसत ₹1167 प्रति क्विंटल था। यह 6.1% की गिरावट है। अंतिम दर्ज भाव ₹1141 प्रति क्विंटल है।
+
+2. WHAT THIS MEANS FOR YOUR DECISION:
+  * दर्ज मंडियों में आवक अधिक होने या मांग कम होने के संकेत हैं। आज की ताज़ा आवक और भाव जाने बिना माल मंडी ले जाने पर कम रिटर्न का जोखिम हो सकता है।
+
+3. RECOMMENDED NEXT STEPS:
+  1. माल लोड करने से पहले जिस मंडी में जा रहे हैं वहां के आज के ताज़ा भाव और आवक की पुष्टि करें; भाड़ा और तुलाई खर्च घटाकर मिलने वाले शुद्ध लाभ की तुलना करें।
+  2. यदि आपकी फसल गैर-नाशवंत है (जैसे सूखी प्याज या अनाज) और आपके पास सुरक्षित सूखा भंडारण है, तो अपनी आर्थिक स्थिति के अनुसार तुरंत बेचने के बजाय अस्थायी भंडारण के विकल्प का मूल्यांकन करें।
+  3. Kisan Call Centre (Toll-Free 1800-180-1551) is readily available for routine crop, seed, or fertilizer questions.
+
+4. WHAT TO CHECK BEFORE ACTING:
+  * Transport Costs: Confirm vehicle hiring rates per quintal before dispatching.
+  * Safe Storage: Assess crop perishability and dry storage availability.
+  * Quality Grading: Sort and clean produce to command the best price tier.
+
+5. MARKET COMPARISON:
+  * इस डेटासेट में अलग-अलग मंडियों के स्तर का डेटा उपलब्ध नहीं है। ये आंकड़े राज्य/क्षेत्रीय औसत हैं। मंडी चुनने से पहले स्थानीय भाव अवश्य जांचें।
+
+6. OFFICIAL ASSISTANCE & HELPLINE:
+  * Kisan Call Centre (Toll-Free): 1800-180-1551 (6:00 AM to 10:00 PM, all 7 days of the week)
+  * Local Support: Gram Panchayat Krishi Sahayak or nearest Krishi Vigyan Kendra (KVK).
+
+7. LIMITATIONS & PROVENANCE:
+  * Provenance: Synthetic Demonstration Data (generated deterministically for research and testing)
+  * Not an individual farm prescription. Estimates are not guaranteed future prices.
+========================================================================

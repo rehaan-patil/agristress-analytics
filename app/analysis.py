@@ -572,7 +572,7 @@ def generate_summary_report(
         "",
         f"**Date Generated:** {datetime.utcnow().strftime('%Y-%m-%d %H:%M:%S UTC')}  ",
         "**Research Topic:** Econometric and Spatial-Temporal Analysis of Farmer Information Demand: Modeling Kisan Call Centre (KCC) Query Influx Against Commodity Price Spreads and Fuel Inflation Shocks to Forecast Agricultural Advisory Stress  ",
-        f"**Data Provenance:** {'SYNTHETIC DEMONSTRATION DATASET (Offline Development & Testing)' if quality['is_synthetic'] else 'REAL OPERATIONAL DATASET'}  ",
+        f"**Data Provenance:** {quality.get('provenance_label', 'SYNTHETIC DEMONSTRATION DATASET (Offline Development & Testing)' if quality.get('is_synthetic') else 'UNVERIFIED / USER-SUPPLIED DATASET')}  ",
         "",
         "---",
         "",
