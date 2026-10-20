@@ -1,8 +1,8 @@
 # AgriStress Analytics — Comprehensive Research Summary Report
 
-**Date Generated:** 2026-10-20 10:43:10 UTC  
+**Date Generated:** 2026-10-20 12:57:57 UTC  
 **Research Topic:** Econometric and Spatial-Temporal Analysis of Farmer Information Demand: Modeling Kisan Call Centre (KCC) Query Influx Against Commodity Price Spreads and Fuel Inflation Shocks to Forecast Agricultural Advisory Stress  
-**Data Provenance:** SYNTHETIC DEMONSTRATION DATASET (Offline Development & Testing)  
+**Data Provenance:** REAL OPERATIONAL DATASET  
 
 ---
 
@@ -20,14 +20,14 @@ This project models daily farmer information demand against key economic and inp
 
 ## 2. Dataset Coverage, Provenance & Quality
 
-- **Sample Date Range:** 2024-01-01 to 2025-12-30
-- **Total Calendar Days:** 730
-- **Observed Query Days:** 730
+- **Sample Date Range:** 2023-01-01 to 2023-06-29
+- **Total Calendar Days:** 180
+- **Observed Query Days:** 180
 - **Unrecorded / Zero Query Days:** 0 (0.0%)
 - **Data Quality Assessment:** GOOD
 
 **Quality & Missingness Handling Notes:**
-- PROVENANCE: Data contains synthetic demonstration observations generated deterministically.
+- PROVENANCE: Real operational data imported from official sources.
 - Mandi holiday / Sunday closures are forward-filled for price continuous continuity.
 
 ---
@@ -36,12 +36,12 @@ This project models daily farmer information demand against key economic and inp
 
 | Variable | Count | Mean | Std Dev | Min | Median | Max | Units |
 | :--- | :---: | :---: | :---: | :---: | :---: | :---: | :--- |
-| `query_count` | 730 | 237.85 | 93.54 | 42.00 | 235.50 | 431.00 | Calls / Day |
-| `wholesale_price` | 730 | 2133.81 | 152.07 | 1765.73 | 2132.48 | 2434.80 | INR / Quintal |
-| `retail_price` | 730 | 2807.40 | 205.78 | 2336.26 | 2787.71 | 3253.71 | INR / Quintal |
-| `diesel_price` | 730 | 102.53 | 5.29 | 90.50 | 104.50 | 110.50 | INR / Litre |
-| `price_spread` | 730 | 673.59 | 66.12 | 509.11 | 667.34 | 854.49 | INR / Quintal |
-| `commodity_volatility_7d` | 729 | 20.17 | 8.32 | 3.83 | 18.72 | 57.65 | INR (7D Std) |
+| `query_count` | 180 | 141.56 | 49.99 | 69.00 | 132.50 | 246.00 | Calls / Day |
+| `wholesale_price` | 180 | 1755.94 | 994.25 | 579.45 | 1138.53 | 3044.04 | INR / Quintal |
+| `retail_price` | 180 | 3054.98 | 540.42 | 2254.94 | 3203.18 | 3702.98 | INR / Quintal |
+| `diesel_price` | 180 | 97.86 | 2.43 | 94.50 | 96.86 | 100.78 | INR / Litre |
+| `price_spread` | 180 | 1299.04 | 600.13 | 573.20 | 1385.99 | 2728.31 | INR / Quintal |
+| `commodity_volatility_7d` | 179 | 57.97 | 79.52 | 14.77 | 32.37 | 354.82 | INR (7D Std) |
 
 ---
 
@@ -49,13 +49,13 @@ This project models daily farmer information demand against key economic and inp
 
 | Variable Pair | Pearson $r$ | Spearman $\rho$ | Sample Size ($N$) | Interpretation |
 | :--- | :---: | :---: | :---: | :--- |
-| KCC Demand vs Wholesale Commodity Price | 0.2307 | 0.2115 | 730 | Weak correlation |
-| KCC Demand vs Commodity Price Daily Change | 0.0108 | 0.0273 | 729 | Weak correlation |
-| KCC Demand vs 7-Day Commodity Price Volatility | -0.0395 | -0.0330 | 729 | Weak correlation |
-| KCC Demand vs Wholesale-Retail Price Spread | 0.1593 | 0.1587 | 730 | Weak correlation |
-| KCC Demand vs Diesel Price Level | 0.3096 | 0.3011 | 730 | Weak correlation |
-| KCC Demand vs Diesel Daily Price Change | 0.0585 | 0.0556 | 729 | Weak correlation |
-| KCC Demand vs 7-Day Lagged Diesel Price Change | 0.0565 | 0.0584 | 722 | Weak correlation |
+| KCC Demand vs Wholesale Commodity Price | -0.8329 | -0.8840 | 180 | Strong correlation |
+| KCC Demand vs Commodity Price Daily Change | -0.1232 | -0.0398 | 179 | Weak correlation |
+| KCC Demand vs 7-Day Commodity Price Volatility | 0.3510 | 0.4424 | 179 | Weak correlation |
+| KCC Demand vs Wholesale-Retail Price Spread | 0.9265 | 0.9093 | 180 | Strong correlation |
+| KCC Demand vs Diesel Price Level | 0.4904 | 0.5661 | 180 | Moderate correlation |
+| KCC Demand vs Diesel Daily Price Change | 0.0684 | 0.0686 | 179 | Weak correlation |
+| KCC Demand vs 7-Day Lagged Diesel Price Change | 0.0648 | 0.0676 | 172 | Weak correlation |
 
 ---
 
@@ -65,32 +65,32 @@ This project models daily farmer information demand against key economic and inp
 - **Research Question:** Do day-to-day percentage changes in wholesale commodity prices linearly correlate with KCC advisory query volume?
 - **Null Hypothesis ($H_0$):** Daily commodity percentage changes have no linear correlation with farmer query volume (r = 0).
 - **Alternative Hypothesis ($H_1$):** Daily commodity percentage changes are linearly correlated with farmer query volume (r != 0).
-- **Statistical Test Used:** Pearson Linear Correlation Test ($N = 729$)
-- **Test Statistic:** `0.0108` | **p-value:** `0.77005` | **Significance Level ($\\alpha$):** 0.05
+- **Statistical Test Used:** Pearson Linear Correlation Test ($N = 179$)
+- **Test Statistic:** `-0.1127` | **p-value:** `0.13303` | **Significance Level ($\\alpha$):** 0.05
 - **Outcome:** **FAIL TO REJECT NULL HYPOTHESIS**
-- **Plain English Verdict:** Fail to reject null hypothesis (r=0.0108, p=0.7701)
+- **Plain English Verdict:** Fail to reject null hypothesis (r=-0.1127, p=0.1330)
 - **Statistical Assumptions:** Assumes linear relationship and bivariate normality. Time-series autocorrelation can artificially narrow standard errors.
 - **Research Limitations:** Linear correlation does not imply causality; price shocks may have delayed non-linear effects not captured by contemporaneous Pearson r.
 
 ### ⚪ HYP-B: Diesel Price Shocks vs Advisory Influx
-- **Research Question:** Do days experiencing sudden retail diesel price revisions trigger significantly different farmer call volumes than normal days?
-- **Null Hypothesis ($H_0$):** KCC query distribution on fuel shock days is identical to non-shock days.
-- **Alternative Hypothesis ($H_1$):** KCC query distribution differs significantly on fuel shock days.
-- **Statistical Test Used:** Mann-Whitney U Non-Parametric Rank Sum Test ($N = 729$)
-- **Test Statistic:** `18526.0` | **p-value:** `0.3939` | **Significance Level ($\\alpha$):** 0.05
+- **Research Question:** Do diesel price shocks trigger advisory demand shifts?
+- **Null Hypothesis ($H_0$):** Query demand is identical during shock and normal fuel days.
+- **Alternative Hypothesis ($H_1$):** Query demand differs significantly during diesel price shocks.
+- **Statistical Test Used:** Mann-Whitney U Test ($N = 179$)
+- **Test Statistic:** `None` | **p-value:** `None` | **Significance Level ($\\alpha$):** 0.05
 - **Outcome:** **FAIL TO REJECT NULL HYPOTHESIS**
-- **Plain English Verdict:** Fail to reject null hypothesis (U=18526.0, p=0.3939)
-- **Statistical Assumptions:** Does not assume normal distribution. Assumes independence of observations between groups.
-- **Research Limitations:** Shock defined as |daily diesel change| >= 1.0%. Identified 51 shock days vs 678 baseline days.
+- **Plain English Verdict:** Too few diesel price shocks detected (3 shock days with |change| >= 1.0%).
+- **Statistical Assumptions:** Requires >= 5 shock days and >= 15 normal days.
+- **Research Limitations:** Fuel price revisions occur intermittently in administered pricing regimes.
 
 ### 🔴 HYP-C: Wholesale-to-Retail Price Spreads vs Query Influx
 - **Research Question:** Is the spread between wholesale mandi price and retail consumer price monotonically associated with farmer query demand?
 - **Null Hypothesis ($H_0$):** There is no monotonic rank association between price spread and KCC query demand (rho = 0).
 - **Alternative Hypothesis ($H_1$):** Price spread and KCC query demand are monotonically associated (rho != 0).
-- **Statistical Test Used:** Spearman Rank-Order Correlation Test ($N = 730$)
-- **Test Statistic:** `0.1587` | **p-value:** `2e-05` | **Significance Level ($\\alpha$):** 0.05
+- **Statistical Test Used:** Spearman Rank-Order Correlation Test ($N = 180$)
+- **Test Statistic:** `0.9093` | **p-value:** `0.0` | **Significance Level ($\\alpha$):** 0.05
 - **Outcome:** **REJECT NULL HYPOTHESIS**
-- **Plain English Verdict:** Reject null hypothesis (rho=0.1587, p=0.0000)
+- **Plain English Verdict:** Reject null hypothesis (rho=0.9093, p=0.0000)
 - **Statistical Assumptions:** Monotonic relationship; does not assume linear bivariate normality.
 - **Research Limitations:** Wholesale-retail spread is observable only where matching commodity retail observations exist.
 
@@ -100,26 +100,26 @@ This project models daily farmer information demand against key economic and inp
 
 - **Model Selected:** `SARIMAX(1,1,1)(1,1,0)[7]`
 - **Evaluation Methodology:** Chronological Train/Test Holdout Split (avoiding future data leakage)
-- **Train Period:** 2024-01-01 to 2025-11-30
-- **Test Period:** 2025-12-01 to 2025-12-30
+- **Train Period:** 2023-01-01 to 2023-05-30
+- **Test Period:** 2023-05-31 to 2023-06-29
 - **Forecast Horizon:** 14 Days
 
 ### Out-of-Sample Holdout Performance Comparison
 
 | Forecasting Model | MAE (Calls) | RMSE (Calls) | Zero-Safe MAPE (%) | Status |
 | :--- | :---: | :---: | :---: | :--- |
-| Seasonal Naive Baseline (7-Day Lag) | 17.43 | 20.67 | 11.64% | Benchmark |
-| SARIMAX(1,1,1)(1,1,0)[7] | 15.34 | 18.96 | 9.58% | **Selected Model** |
+| Seasonal Naive Baseline (7-Day Lag) | 9.83 | 11.81 | 7.08% | Benchmark |
+| SARIMAX(1,1,1)(1,1,0)[7] | 10.46 | 12.88 | 7.32% | **Selected Model** |
 
 ---
 
 ## 7. Agricultural Advisory Stress Indicator
 
 - **Operational Stress Category:** `NORMAL`
-- **Historical Baseline Mean:** 237.8 inquiries/day
-- **Elevated Stress Threshold:** >= 308.0 inquiries/day (Historical Mean + 0.75 * Std Dev)
-- **High Advisory Stress Threshold:** >= 401.6 inquiries/day (Historical Mean + 1.75 * Std Dev)
-- **Interpretation:** Forecast (146.5) is within normal parameters (baseline mean: 237.9).
+- **Historical Baseline Mean:** 141.6 inquiries/day
+- **Elevated Stress Threshold:** >= 179.1 inquiries/day (Historical Mean + 0.75 * Std Dev)
+- **High Advisory Stress Threshold:** >= 229.0 inquiries/day (Historical Mean + 1.75 * Std Dev)
+- **Interpretation:** Forecast (154.0) is within normal parameters (baseline mean: 141.6).
 - **Important Operational Disclaimer:** *Project-defined advisory stress indicator for operational research.*
 
 ---

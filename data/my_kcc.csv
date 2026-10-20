@@ -1,0 +1,541 @@
+observation_date,state,district,query_type,query_count
+2023-01-01,Maharashtra,Nashik,Crop price and market,38
+2023-01-01,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-01,Maharashtra,Nashik,Government schemes,20
+2023-01-02,Maharashtra,Nashik,Crop price and market,45
+2023-01-02,Maharashtra,Nashik,Crop disease and pest,34
+2023-01-02,Maharashtra,Nashik,Government schemes,24
+2023-01-03,Maharashtra,Nashik,Crop price and market,40
+2023-01-03,Maharashtra,Nashik,Crop disease and pest,30
+2023-01-03,Maharashtra,Nashik,Government schemes,21
+2023-01-04,Maharashtra,Nashik,Crop price and market,41
+2023-01-04,Maharashtra,Nashik,Crop disease and pest,31
+2023-01-04,Maharashtra,Nashik,Government schemes,21
+2023-01-05,Maharashtra,Nashik,Crop price and market,37
+2023-01-05,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-05,Maharashtra,Nashik,Government schemes,19
+2023-01-06,Maharashtra,Nashik,Crop price and market,37
+2023-01-06,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-06,Maharashtra,Nashik,Government schemes,19
+2023-01-07,Maharashtra,Nashik,Crop price and market,38
+2023-01-07,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-07,Maharashtra,Nashik,Government schemes,20
+2023-01-08,Maharashtra,Nashik,Crop price and market,42
+2023-01-08,Maharashtra,Nashik,Crop disease and pest,32
+2023-01-08,Maharashtra,Nashik,Government schemes,22
+2023-01-09,Maharashtra,Nashik,Crop price and market,47
+2023-01-09,Maharashtra,Nashik,Crop disease and pest,35
+2023-01-09,Maharashtra,Nashik,Government schemes,24
+2023-01-10,Maharashtra,Nashik,Crop price and market,47
+2023-01-10,Maharashtra,Nashik,Crop disease and pest,35
+2023-01-10,Maharashtra,Nashik,Government schemes,25
+2023-01-11,Maharashtra,Nashik,Crop price and market,43
+2023-01-11,Maharashtra,Nashik,Crop disease and pest,33
+2023-01-11,Maharashtra,Nashik,Government schemes,23
+2023-01-12,Maharashtra,Nashik,Crop price and market,39
+2023-01-12,Maharashtra,Nashik,Crop disease and pest,30
+2023-01-12,Maharashtra,Nashik,Government schemes,21
+2023-01-13,Maharashtra,Nashik,Crop price and market,37
+2023-01-13,Maharashtra,Nashik,Crop disease and pest,27
+2023-01-13,Maharashtra,Nashik,Government schemes,19
+2023-01-14,Maharashtra,Nashik,Crop price and market,41
+2023-01-14,Maharashtra,Nashik,Crop disease and pest,31
+2023-01-14,Maharashtra,Nashik,Government schemes,21
+2023-01-15,Maharashtra,Nashik,Crop price and market,37
+2023-01-15,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-15,Maharashtra,Nashik,Government schemes,19
+2023-01-16,Maharashtra,Nashik,Crop price and market,41
+2023-01-16,Maharashtra,Nashik,Crop disease and pest,31
+2023-01-16,Maharashtra,Nashik,Government schemes,21
+2023-01-17,Maharashtra,Nashik,Crop price and market,46
+2023-01-17,Maharashtra,Nashik,Crop disease and pest,35
+2023-01-17,Maharashtra,Nashik,Government schemes,24
+2023-01-18,Maharashtra,Nashik,Crop price and market,34
+2023-01-18,Maharashtra,Nashik,Crop disease and pest,25
+2023-01-18,Maharashtra,Nashik,Government schemes,17
+2023-01-19,Maharashtra,Nashik,Crop price and market,34
+2023-01-19,Maharashtra,Nashik,Crop disease and pest,26
+2023-01-19,Maharashtra,Nashik,Government schemes,18
+2023-01-20,Maharashtra,Nashik,Crop price and market,33
+2023-01-20,Maharashtra,Nashik,Crop disease and pest,25
+2023-01-20,Maharashtra,Nashik,Government schemes,17
+2023-01-21,Maharashtra,Nashik,Crop price and market,38
+2023-01-21,Maharashtra,Nashik,Crop disease and pest,29
+2023-01-21,Maharashtra,Nashik,Government schemes,20
+2023-01-22,Maharashtra,Nashik,Crop price and market,32
+2023-01-22,Maharashtra,Nashik,Crop disease and pest,24
+2023-01-22,Maharashtra,Nashik,Government schemes,17
+2023-01-23,Maharashtra,Nashik,Crop price and market,34
+2023-01-23,Maharashtra,Nashik,Crop disease and pest,25
+2023-01-23,Maharashtra,Nashik,Government schemes,17
+2023-01-24,Maharashtra,Nashik,Crop price and market,41
+2023-01-24,Maharashtra,Nashik,Crop disease and pest,30
+2023-01-24,Maharashtra,Nashik,Government schemes,21
+2023-01-25,Maharashtra,Nashik,Crop price and market,43
+2023-01-25,Maharashtra,Nashik,Crop disease and pest,33
+2023-01-25,Maharashtra,Nashik,Government schemes,23
+2023-01-26,Maharashtra,Nashik,Crop price and market,30
+2023-01-26,Maharashtra,Nashik,Crop disease and pest,23
+2023-01-26,Maharashtra,Nashik,Government schemes,16
+2023-01-27,Maharashtra,Nashik,Crop price and market,34
+2023-01-27,Maharashtra,Nashik,Crop disease and pest,26
+2023-01-27,Maharashtra,Nashik,Government schemes,18
+2023-01-28,Maharashtra,Nashik,Crop price and market,37
+2023-01-28,Maharashtra,Nashik,Crop disease and pest,28
+2023-01-28,Maharashtra,Nashik,Government schemes,20
+2023-01-29,Maharashtra,Nashik,Crop price and market,40
+2023-01-29,Maharashtra,Nashik,Crop disease and pest,29
+2023-01-29,Maharashtra,Nashik,Government schemes,20
+2023-01-30,Maharashtra,Nashik,Crop price and market,40
+2023-01-30,Maharashtra,Nashik,Crop disease and pest,29
+2023-01-30,Maharashtra,Nashik,Government schemes,20
+2023-01-31,Maharashtra,Nashik,Crop price and market,43
+2023-01-31,Maharashtra,Nashik,Crop disease and pest,32
+2023-01-31,Maharashtra,Nashik,Government schemes,22
+2023-02-01,Maharashtra,Nashik,Crop price and market,43
+2023-02-01,Maharashtra,Nashik,Crop disease and pest,32
+2023-02-01,Maharashtra,Nashik,Government schemes,23
+2023-02-02,Maharashtra,Nashik,Crop price and market,41
+2023-02-02,Maharashtra,Nashik,Crop disease and pest,30
+2023-02-02,Maharashtra,Nashik,Government schemes,21
+2023-02-03,Maharashtra,Nashik,Crop price and market,37
+2023-02-03,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-03,Maharashtra,Nashik,Government schemes,19
+2023-02-04,Maharashtra,Nashik,Crop price and market,43
+2023-02-04,Maharashtra,Nashik,Crop disease and pest,32
+2023-02-04,Maharashtra,Nashik,Government schemes,22
+2023-02-05,Maharashtra,Nashik,Crop price and market,47
+2023-02-05,Maharashtra,Nashik,Crop disease and pest,35
+2023-02-05,Maharashtra,Nashik,Government schemes,25
+2023-02-06,Maharashtra,Nashik,Crop price and market,51
+2023-02-06,Maharashtra,Nashik,Crop disease and pest,38
+2023-02-06,Maharashtra,Nashik,Government schemes,26
+2023-02-07,Maharashtra,Nashik,Crop price and market,50
+2023-02-07,Maharashtra,Nashik,Crop disease and pest,37
+2023-02-07,Maharashtra,Nashik,Government schemes,26
+2023-02-08,Maharashtra,Nashik,Crop price and market,53
+2023-02-08,Maharashtra,Nashik,Crop disease and pest,39
+2023-02-08,Maharashtra,Nashik,Government schemes,27
+2023-02-09,Maharashtra,Nashik,Crop price and market,47
+2023-02-09,Maharashtra,Nashik,Crop disease and pest,35
+2023-02-09,Maharashtra,Nashik,Government schemes,24
+2023-02-10,Maharashtra,Nashik,Crop price and market,42
+2023-02-10,Maharashtra,Nashik,Crop disease and pest,31
+2023-02-10,Maharashtra,Nashik,Government schemes,22
+2023-02-11,Maharashtra,Nashik,Crop price and market,42
+2023-02-11,Maharashtra,Nashik,Crop disease and pest,31
+2023-02-11,Maharashtra,Nashik,Government schemes,22
+2023-02-12,Maharashtra,Nashik,Crop price and market,37
+2023-02-12,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-12,Maharashtra,Nashik,Government schemes,20
+2023-02-13,Maharashtra,Nashik,Crop price and market,46
+2023-02-13,Maharashtra,Nashik,Crop disease and pest,34
+2023-02-13,Maharashtra,Nashik,Government schemes,24
+2023-02-14,Maharashtra,Nashik,Crop price and market,39
+2023-02-14,Maharashtra,Nashik,Crop disease and pest,30
+2023-02-14,Maharashtra,Nashik,Government schemes,21
+2023-02-15,Maharashtra,Nashik,Crop price and market,42
+2023-02-15,Maharashtra,Nashik,Crop disease and pest,32
+2023-02-15,Maharashtra,Nashik,Government schemes,22
+2023-02-16,Maharashtra,Nashik,Crop price and market,40
+2023-02-16,Maharashtra,Nashik,Crop disease and pest,29
+2023-02-16,Maharashtra,Nashik,Government schemes,20
+2023-02-17,Maharashtra,Nashik,Crop price and market,42
+2023-02-17,Maharashtra,Nashik,Crop disease and pest,32
+2023-02-17,Maharashtra,Nashik,Government schemes,22
+2023-02-18,Maharashtra,Nashik,Crop price and market,37
+2023-02-18,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-18,Maharashtra,Nashik,Government schemes,20
+2023-02-19,Maharashtra,Nashik,Crop price and market,41
+2023-02-19,Maharashtra,Nashik,Crop disease and pest,31
+2023-02-19,Maharashtra,Nashik,Government schemes,22
+2023-02-20,Maharashtra,Nashik,Crop price and market,41
+2023-02-20,Maharashtra,Nashik,Crop disease and pest,31
+2023-02-20,Maharashtra,Nashik,Government schemes,22
+2023-02-21,Maharashtra,Nashik,Crop price and market,38
+2023-02-21,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-21,Maharashtra,Nashik,Government schemes,20
+2023-02-22,Maharashtra,Nashik,Crop price and market,43
+2023-02-22,Maharashtra,Nashik,Crop disease and pest,33
+2023-02-22,Maharashtra,Nashik,Government schemes,23
+2023-02-23,Maharashtra,Nashik,Crop price and market,38
+2023-02-23,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-23,Maharashtra,Nashik,Government schemes,20
+2023-02-24,Maharashtra,Nashik,Crop price and market,37
+2023-02-24,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-24,Maharashtra,Nashik,Government schemes,20
+2023-02-25,Maharashtra,Nashik,Crop price and market,37
+2023-02-25,Maharashtra,Nashik,Crop disease and pest,28
+2023-02-25,Maharashtra,Nashik,Government schemes,20
+2023-02-26,Maharashtra,Nashik,Crop price and market,37
+2023-02-26,Maharashtra,Nashik,Crop disease and pest,27
+2023-02-26,Maharashtra,Nashik,Government schemes,19
+2023-02-27,Maharashtra,Nashik,Crop price and market,45
+2023-02-27,Maharashtra,Nashik,Crop disease and pest,33
+2023-02-27,Maharashtra,Nashik,Government schemes,23
+2023-02-28,Maharashtra,Nashik,Crop price and market,47
+2023-02-28,Maharashtra,Nashik,Crop disease and pest,36
+2023-02-28,Maharashtra,Nashik,Government schemes,25
+2023-03-01,Maharashtra,Nashik,Crop price and market,47
+2023-03-01,Maharashtra,Nashik,Crop disease and pest,35
+2023-03-01,Maharashtra,Nashik,Government schemes,25
+2023-03-02,Maharashtra,Nashik,Crop price and market,41
+2023-03-02,Maharashtra,Nashik,Crop disease and pest,31
+2023-03-02,Maharashtra,Nashik,Government schemes,22
+2023-03-03,Maharashtra,Nashik,Crop price and market,35
+2023-03-03,Maharashtra,Nashik,Crop disease and pest,27
+2023-03-03,Maharashtra,Nashik,Government schemes,19
+2023-03-04,Maharashtra,Nashik,Crop price and market,39
+2023-03-04,Maharashtra,Nashik,Crop disease and pest,30
+2023-03-04,Maharashtra,Nashik,Government schemes,21
+2023-03-05,Maharashtra,Nashik,Crop price and market,47
+2023-03-05,Maharashtra,Nashik,Crop disease and pest,35
+2023-03-05,Maharashtra,Nashik,Government schemes,24
+2023-03-06,Maharashtra,Nashik,Crop price and market,46
+2023-03-06,Maharashtra,Nashik,Crop disease and pest,35
+2023-03-06,Maharashtra,Nashik,Government schemes,24
+2023-03-07,Maharashtra,Nashik,Crop price and market,51
+2023-03-07,Maharashtra,Nashik,Crop disease and pest,38
+2023-03-07,Maharashtra,Nashik,Government schemes,26
+2023-03-08,Maharashtra,Nashik,Crop price and market,41
+2023-03-08,Maharashtra,Nashik,Crop disease and pest,31
+2023-03-08,Maharashtra,Nashik,Government schemes,22
+2023-03-09,Maharashtra,Nashik,Crop price and market,44
+2023-03-09,Maharashtra,Nashik,Crop disease and pest,33
+2023-03-09,Maharashtra,Nashik,Government schemes,23
+2023-03-10,Maharashtra,Nashik,Crop price and market,48
+2023-03-10,Maharashtra,Nashik,Crop disease and pest,36
+2023-03-10,Maharashtra,Nashik,Government schemes,25
+2023-03-11,Maharashtra,Nashik,Crop price and market,47
+2023-03-11,Maharashtra,Nashik,Crop disease and pest,35
+2023-03-11,Maharashtra,Nashik,Government schemes,24
+2023-03-12,Maharashtra,Nashik,Crop price and market,53
+2023-03-12,Maharashtra,Nashik,Crop disease and pest,39
+2023-03-12,Maharashtra,Nashik,Government schemes,27
+2023-03-13,Maharashtra,Nashik,Crop price and market,53
+2023-03-13,Maharashtra,Nashik,Crop disease and pest,40
+2023-03-13,Maharashtra,Nashik,Government schemes,28
+2023-03-14,Maharashtra,Nashik,Crop price and market,59
+2023-03-14,Maharashtra,Nashik,Crop disease and pest,44
+2023-03-14,Maharashtra,Nashik,Government schemes,31
+2023-03-15,Maharashtra,Nashik,Crop price and market,62
+2023-03-15,Maharashtra,Nashik,Crop disease and pest,47
+2023-03-15,Maharashtra,Nashik,Government schemes,32
+2023-03-16,Maharashtra,Nashik,Crop price and market,63
+2023-03-16,Maharashtra,Nashik,Crop disease and pest,48
+2023-03-16,Maharashtra,Nashik,Government schemes,33
+2023-03-17,Maharashtra,Nashik,Crop price and market,66
+2023-03-17,Maharashtra,Nashik,Crop disease and pest,50
+2023-03-17,Maharashtra,Nashik,Government schemes,35
+2023-03-18,Maharashtra,Nashik,Crop price and market,74
+2023-03-18,Maharashtra,Nashik,Crop disease and pest,55
+2023-03-18,Maharashtra,Nashik,Government schemes,38
+2023-03-19,Maharashtra,Nashik,Crop price and market,80
+2023-03-19,Maharashtra,Nashik,Crop disease and pest,59
+2023-03-19,Maharashtra,Nashik,Government schemes,41
+2023-03-20,Maharashtra,Nashik,Crop price and market,83
+2023-03-20,Maharashtra,Nashik,Crop disease and pest,63
+2023-03-20,Maharashtra,Nashik,Government schemes,44
+2023-03-21,Maharashtra,Nashik,Crop price and market,91
+2023-03-21,Maharashtra,Nashik,Crop disease and pest,68
+2023-03-21,Maharashtra,Nashik,Government schemes,48
+2023-03-22,Maharashtra,Nashik,Crop price and market,89
+2023-03-22,Maharashtra,Nashik,Crop disease and pest,67
+2023-03-22,Maharashtra,Nashik,Government schemes,47
+2023-03-23,Maharashtra,Nashik,Crop price and market,87
+2023-03-23,Maharashtra,Nashik,Crop disease and pest,65
+2023-03-23,Maharashtra,Nashik,Government schemes,46
+2023-03-24,Maharashtra,Nashik,Crop price and market,91
+2023-03-24,Maharashtra,Nashik,Crop disease and pest,68
+2023-03-24,Maharashtra,Nashik,Government schemes,48
+2023-03-25,Maharashtra,Nashik,Crop price and market,90
+2023-03-25,Maharashtra,Nashik,Crop disease and pest,67
+2023-03-25,Maharashtra,Nashik,Government schemes,47
+2023-03-26,Maharashtra,Nashik,Crop price and market,93
+2023-03-26,Maharashtra,Nashik,Crop disease and pest,70
+2023-03-26,Maharashtra,Nashik,Government schemes,49
+2023-03-27,Maharashtra,Nashik,Crop price and market,97
+2023-03-27,Maharashtra,Nashik,Crop disease and pest,72
+2023-03-27,Maharashtra,Nashik,Government schemes,50
+2023-03-28,Maharashtra,Nashik,Crop price and market,99
+2023-03-28,Maharashtra,Nashik,Crop disease and pest,74
+2023-03-28,Maharashtra,Nashik,Government schemes,52
+2023-03-29,Maharashtra,Nashik,Crop price and market,98
+2023-03-29,Maharashtra,Nashik,Crop disease and pest,73
+2023-03-29,Maharashtra,Nashik,Government schemes,51
+2023-03-30,Maharashtra,Nashik,Crop price and market,99
+2023-03-30,Maharashtra,Nashik,Crop disease and pest,74
+2023-03-30,Maharashtra,Nashik,Government schemes,52
+2023-03-31,Maharashtra,Nashik,Crop price and market,96
+2023-03-31,Maharashtra,Nashik,Crop disease and pest,72
+2023-03-31,Maharashtra,Nashik,Government schemes,50
+2023-04-01,Maharashtra,Nashik,Crop price and market,99
+2023-04-01,Maharashtra,Nashik,Crop disease and pest,74
+2023-04-01,Maharashtra,Nashik,Government schemes,52
+2023-04-02,Maharashtra,Nashik,Crop price and market,102
+2023-04-02,Maharashtra,Nashik,Crop disease and pest,77
+2023-04-02,Maharashtra,Nashik,Government schemes,54
+2023-04-03,Maharashtra,Nashik,Crop price and market,107
+2023-04-03,Maharashtra,Nashik,Crop disease and pest,81
+2023-04-03,Maharashtra,Nashik,Government schemes,56
+2023-04-04,Maharashtra,Nashik,Crop price and market,97
+2023-04-04,Maharashtra,Nashik,Crop disease and pest,73
+2023-04-04,Maharashtra,Nashik,Government schemes,51
+2023-04-05,Maharashtra,Nashik,Crop price and market,106
+2023-04-05,Maharashtra,Nashik,Crop disease and pest,79
+2023-04-05,Maharashtra,Nashik,Government schemes,55
+2023-04-06,Maharashtra,Nashik,Crop price and market,102
+2023-04-06,Maharashtra,Nashik,Crop disease and pest,76
+2023-04-06,Maharashtra,Nashik,Government schemes,53
+2023-04-07,Maharashtra,Nashik,Crop price and market,96
+2023-04-07,Maharashtra,Nashik,Crop disease and pest,73
+2023-04-07,Maharashtra,Nashik,Government schemes,51
+2023-04-08,Maharashtra,Nashik,Crop price and market,104
+2023-04-08,Maharashtra,Nashik,Crop disease and pest,79
+2023-04-08,Maharashtra,Nashik,Government schemes,55
+2023-04-09,Maharashtra,Nashik,Crop price and market,106
+2023-04-09,Maharashtra,Nashik,Crop disease and pest,80
+2023-04-09,Maharashtra,Nashik,Government schemes,55
+2023-04-10,Maharashtra,Nashik,Crop price and market,108
+2023-04-10,Maharashtra,Nashik,Crop disease and pest,81
+2023-04-10,Maharashtra,Nashik,Government schemes,57
+2023-04-11,Maharashtra,Nashik,Crop price and market,104
+2023-04-11,Maharashtra,Nashik,Crop disease and pest,78
+2023-04-11,Maharashtra,Nashik,Government schemes,55
+2023-04-12,Maharashtra,Nashik,Crop price and market,103
+2023-04-12,Maharashtra,Nashik,Crop disease and pest,78
+2023-04-12,Maharashtra,Nashik,Government schemes,54
+2023-04-13,Maharashtra,Nashik,Crop price and market,100
+2023-04-13,Maharashtra,Nashik,Crop disease and pest,75
+2023-04-13,Maharashtra,Nashik,Government schemes,52
+2023-04-14,Maharashtra,Nashik,Crop price and market,102
+2023-04-14,Maharashtra,Nashik,Crop disease and pest,77
+2023-04-14,Maharashtra,Nashik,Government schemes,53
+2023-04-15,Maharashtra,Nashik,Crop price and market,103
+2023-04-15,Maharashtra,Nashik,Crop disease and pest,77
+2023-04-15,Maharashtra,Nashik,Government schemes,54
+2023-04-16,Maharashtra,Nashik,Crop price and market,106
+2023-04-16,Maharashtra,Nashik,Crop disease and pest,79
+2023-04-16,Maharashtra,Nashik,Government schemes,55
+2023-04-17,Maharashtra,Nashik,Crop price and market,101
+2023-04-17,Maharashtra,Nashik,Crop disease and pest,75
+2023-04-17,Maharashtra,Nashik,Government schemes,52
+2023-04-18,Maharashtra,Nashik,Crop price and market,102
+2023-04-18,Maharashtra,Nashik,Crop disease and pest,77
+2023-04-18,Maharashtra,Nashik,Government schemes,54
+2023-04-19,Maharashtra,Nashik,Crop price and market,96
+2023-04-19,Maharashtra,Nashik,Crop disease and pest,73
+2023-04-19,Maharashtra,Nashik,Government schemes,51
+2023-04-20,Maharashtra,Nashik,Crop price and market,96
+2023-04-20,Maharashtra,Nashik,Crop disease and pest,73
+2023-04-20,Maharashtra,Nashik,Government schemes,51
+2023-04-21,Maharashtra,Nashik,Crop price and market,94
+2023-04-21,Maharashtra,Nashik,Crop disease and pest,71
+2023-04-21,Maharashtra,Nashik,Government schemes,49
+2023-04-22,Maharashtra,Nashik,Crop price and market,94
+2023-04-22,Maharashtra,Nashik,Crop disease and pest,71
+2023-04-22,Maharashtra,Nashik,Government schemes,49
+2023-04-23,Maharashtra,Nashik,Crop price and market,72
+2023-04-23,Maharashtra,Nashik,Crop disease and pest,54
+2023-04-23,Maharashtra,Nashik,Government schemes,38
+2023-04-24,Maharashtra,Nashik,Crop price and market,77
+2023-04-24,Maharashtra,Nashik,Crop disease and pest,57
+2023-04-24,Maharashtra,Nashik,Government schemes,40
+2023-04-25,Maharashtra,Nashik,Crop price and market,74
+2023-04-25,Maharashtra,Nashik,Crop disease and pest,55
+2023-04-25,Maharashtra,Nashik,Government schemes,38
+2023-04-26,Maharashtra,Nashik,Crop price and market,73
+2023-04-26,Maharashtra,Nashik,Crop disease and pest,55
+2023-04-26,Maharashtra,Nashik,Government schemes,38
+2023-04-27,Maharashtra,Nashik,Crop price and market,74
+2023-04-27,Maharashtra,Nashik,Crop disease and pest,55
+2023-04-27,Maharashtra,Nashik,Government schemes,39
+2023-04-28,Maharashtra,Nashik,Crop price and market,68
+2023-04-28,Maharashtra,Nashik,Crop disease and pest,51
+2023-04-28,Maharashtra,Nashik,Government schemes,35
+2023-04-29,Maharashtra,Nashik,Crop price and market,69
+2023-04-29,Maharashtra,Nashik,Crop disease and pest,51
+2023-04-29,Maharashtra,Nashik,Government schemes,36
+2023-04-30,Maharashtra,Nashik,Crop price and market,75
+2023-04-30,Maharashtra,Nashik,Crop disease and pest,57
+2023-04-30,Maharashtra,Nashik,Government schemes,40
+2023-05-01,Maharashtra,Nashik,Crop price and market,78
+2023-05-01,Maharashtra,Nashik,Crop disease and pest,58
+2023-05-01,Maharashtra,Nashik,Government schemes,41
+2023-05-02,Maharashtra,Nashik,Crop price and market,84
+2023-05-02,Maharashtra,Nashik,Crop disease and pest,63
+2023-05-02,Maharashtra,Nashik,Government schemes,44
+2023-05-03,Maharashtra,Nashik,Crop price and market,78
+2023-05-03,Maharashtra,Nashik,Crop disease and pest,58
+2023-05-03,Maharashtra,Nashik,Government schemes,40
+2023-05-04,Maharashtra,Nashik,Crop price and market,80
+2023-05-04,Maharashtra,Nashik,Crop disease and pest,60
+2023-05-04,Maharashtra,Nashik,Government schemes,42
+2023-05-05,Maharashtra,Nashik,Crop price and market,77
+2023-05-05,Maharashtra,Nashik,Crop disease and pest,57
+2023-05-05,Maharashtra,Nashik,Government schemes,40
+2023-05-06,Maharashtra,Nashik,Crop price and market,78
+2023-05-06,Maharashtra,Nashik,Crop disease and pest,58
+2023-05-06,Maharashtra,Nashik,Government schemes,41
+2023-05-07,Maharashtra,Nashik,Crop price and market,82
+2023-05-07,Maharashtra,Nashik,Crop disease and pest,61
+2023-05-07,Maharashtra,Nashik,Government schemes,43
+2023-05-08,Maharashtra,Nashik,Crop price and market,87
+2023-05-08,Maharashtra,Nashik,Crop disease and pest,65
+2023-05-08,Maharashtra,Nashik,Government schemes,46
+2023-05-09,Maharashtra,Nashik,Crop price and market,86
+2023-05-09,Maharashtra,Nashik,Crop disease and pest,64
+2023-05-09,Maharashtra,Nashik,Government schemes,45
+2023-05-10,Maharashtra,Nashik,Crop price and market,84
+2023-05-10,Maharashtra,Nashik,Crop disease and pest,63
+2023-05-10,Maharashtra,Nashik,Government schemes,44
+2023-05-11,Maharashtra,Nashik,Crop price and market,81
+2023-05-11,Maharashtra,Nashik,Crop disease and pest,60
+2023-05-11,Maharashtra,Nashik,Government schemes,42
+2023-05-12,Maharashtra,Nashik,Crop price and market,74
+2023-05-12,Maharashtra,Nashik,Crop disease and pest,55
+2023-05-12,Maharashtra,Nashik,Government schemes,39
+2023-05-13,Maharashtra,Nashik,Crop price and market,78
+2023-05-13,Maharashtra,Nashik,Crop disease and pest,58
+2023-05-13,Maharashtra,Nashik,Government schemes,40
+2023-05-14,Maharashtra,Nashik,Crop price and market,76
+2023-05-14,Maharashtra,Nashik,Crop disease and pest,57
+2023-05-14,Maharashtra,Nashik,Government schemes,40
+2023-05-15,Maharashtra,Nashik,Crop price and market,84
+2023-05-15,Maharashtra,Nashik,Crop disease and pest,63
+2023-05-15,Maharashtra,Nashik,Government schemes,44
+2023-05-16,Maharashtra,Nashik,Crop price and market,63
+2023-05-16,Maharashtra,Nashik,Crop disease and pest,47
+2023-05-16,Maharashtra,Nashik,Government schemes,33
+2023-05-17,Maharashtra,Nashik,Crop price and market,60
+2023-05-17,Maharashtra,Nashik,Crop disease and pest,46
+2023-05-17,Maharashtra,Nashik,Government schemes,32
+2023-05-18,Maharashtra,Nashik,Crop price and market,54
+2023-05-18,Maharashtra,Nashik,Crop disease and pest,40
+2023-05-18,Maharashtra,Nashik,Government schemes,28
+2023-05-19,Maharashtra,Nashik,Crop price and market,51
+2023-05-19,Maharashtra,Nashik,Crop disease and pest,38
+2023-05-19,Maharashtra,Nashik,Government schemes,27
+2023-05-20,Maharashtra,Nashik,Crop price and market,60
+2023-05-20,Maharashtra,Nashik,Crop disease and pest,45
+2023-05-20,Maharashtra,Nashik,Government schemes,31
+2023-05-21,Maharashtra,Nashik,Crop price and market,53
+2023-05-21,Maharashtra,Nashik,Crop disease and pest,39
+2023-05-21,Maharashtra,Nashik,Government schemes,27
+2023-05-22,Maharashtra,Nashik,Crop price and market,64
+2023-05-22,Maharashtra,Nashik,Crop disease and pest,49
+2023-05-22,Maharashtra,Nashik,Government schemes,34
+2023-05-23,Maharashtra,Nashik,Crop price and market,59
+2023-05-23,Maharashtra,Nashik,Crop disease and pest,45
+2023-05-23,Maharashtra,Nashik,Government schemes,31
+2023-05-24,Maharashtra,Nashik,Crop price and market,57
+2023-05-24,Maharashtra,Nashik,Crop disease and pest,42
+2023-05-24,Maharashtra,Nashik,Government schemes,29
+2023-05-25,Maharashtra,Nashik,Crop price and market,52
+2023-05-25,Maharashtra,Nashik,Crop disease and pest,40
+2023-05-25,Maharashtra,Nashik,Government schemes,28
+2023-05-26,Maharashtra,Nashik,Crop price and market,51
+2023-05-26,Maharashtra,Nashik,Crop disease and pest,38
+2023-05-26,Maharashtra,Nashik,Government schemes,27
+2023-05-27,Maharashtra,Nashik,Crop price and market,51
+2023-05-27,Maharashtra,Nashik,Crop disease and pest,39
+2023-05-27,Maharashtra,Nashik,Government schemes,27
+2023-05-28,Maharashtra,Nashik,Crop price and market,56
+2023-05-28,Maharashtra,Nashik,Crop disease and pest,42
+2023-05-28,Maharashtra,Nashik,Government schemes,29
+2023-05-29,Maharashtra,Nashik,Crop price and market,58
+2023-05-29,Maharashtra,Nashik,Crop disease and pest,43
+2023-05-29,Maharashtra,Nashik,Government schemes,30
+2023-05-30,Maharashtra,Nashik,Crop price and market,66
+2023-05-30,Maharashtra,Nashik,Crop disease and pest,50
+2023-05-30,Maharashtra,Nashik,Government schemes,34
+2023-05-31,Maharashtra,Nashik,Crop price and market,58
+2023-05-31,Maharashtra,Nashik,Crop disease and pest,43
+2023-05-31,Maharashtra,Nashik,Government schemes,30
+2023-06-01,Maharashtra,Nashik,Crop price and market,57
+2023-06-01,Maharashtra,Nashik,Crop disease and pest,43
+2023-06-01,Maharashtra,Nashik,Government schemes,30
+2023-06-02,Maharashtra,Nashik,Crop price and market,59
+2023-06-02,Maharashtra,Nashik,Crop disease and pest,45
+2023-06-02,Maharashtra,Nashik,Government schemes,31
+2023-06-03,Maharashtra,Nashik,Crop price and market,57
+2023-06-03,Maharashtra,Nashik,Crop disease and pest,42
+2023-06-03,Maharashtra,Nashik,Government schemes,29
+2023-06-04,Maharashtra,Nashik,Crop price and market,61
+2023-06-04,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-04,Maharashtra,Nashik,Government schemes,32
+2023-06-05,Maharashtra,Nashik,Crop price and market,66
+2023-06-05,Maharashtra,Nashik,Crop disease and pest,50
+2023-06-05,Maharashtra,Nashik,Government schemes,34
+2023-06-06,Maharashtra,Nashik,Crop price and market,70
+2023-06-06,Maharashtra,Nashik,Crop disease and pest,53
+2023-06-06,Maharashtra,Nashik,Government schemes,37
+2023-06-07,Maharashtra,Nashik,Crop price and market,68
+2023-06-07,Maharashtra,Nashik,Crop disease and pest,51
+2023-06-07,Maharashtra,Nashik,Government schemes,35
+2023-06-08,Maharashtra,Nashik,Crop price and market,60
+2023-06-08,Maharashtra,Nashik,Crop disease and pest,45
+2023-06-08,Maharashtra,Nashik,Government schemes,32
+2023-06-09,Maharashtra,Nashik,Crop price and market,62
+2023-06-09,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-09,Maharashtra,Nashik,Government schemes,32
+2023-06-10,Maharashtra,Nashik,Crop price and market,56
+2023-06-10,Maharashtra,Nashik,Crop disease and pest,42
+2023-06-10,Maharashtra,Nashik,Government schemes,29
+2023-06-11,Maharashtra,Nashik,Crop price and market,64
+2023-06-11,Maharashtra,Nashik,Crop disease and pest,48
+2023-06-11,Maharashtra,Nashik,Government schemes,33
+2023-06-12,Maharashtra,Nashik,Crop price and market,70
+2023-06-12,Maharashtra,Nashik,Crop disease and pest,52
+2023-06-12,Maharashtra,Nashik,Government schemes,37
+2023-06-13,Maharashtra,Nashik,Crop price and market,60
+2023-06-13,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-13,Maharashtra,Nashik,Government schemes,32
+2023-06-14,Maharashtra,Nashik,Crop price and market,64
+2023-06-14,Maharashtra,Nashik,Crop disease and pest,49
+2023-06-14,Maharashtra,Nashik,Government schemes,34
+2023-06-15,Maharashtra,Nashik,Crop price and market,62
+2023-06-15,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-15,Maharashtra,Nashik,Government schemes,32
+2023-06-16,Maharashtra,Nashik,Crop price and market,61
+2023-06-16,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-16,Maharashtra,Nashik,Government schemes,32
+2023-06-17,Maharashtra,Nashik,Crop price and market,53
+2023-06-17,Maharashtra,Nashik,Crop disease and pest,40
+2023-06-17,Maharashtra,Nashik,Government schemes,28
+2023-06-18,Maharashtra,Nashik,Crop price and market,60
+2023-06-18,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-18,Maharashtra,Nashik,Government schemes,32
+2023-06-19,Maharashtra,Nashik,Crop price and market,66
+2023-06-19,Maharashtra,Nashik,Crop disease and pest,50
+2023-06-19,Maharashtra,Nashik,Government schemes,35
+2023-06-20,Maharashtra,Nashik,Crop price and market,64
+2023-06-20,Maharashtra,Nashik,Crop disease and pest,49
+2023-06-20,Maharashtra,Nashik,Government schemes,34
+2023-06-21,Maharashtra,Nashik,Crop price and market,60
+2023-06-21,Maharashtra,Nashik,Crop disease and pest,45
+2023-06-21,Maharashtra,Nashik,Government schemes,32
+2023-06-22,Maharashtra,Nashik,Crop price and market,54
+2023-06-22,Maharashtra,Nashik,Crop disease and pest,41
+2023-06-22,Maharashtra,Nashik,Government schemes,29
+2023-06-23,Maharashtra,Nashik,Crop price and market,52
+2023-06-23,Maharashtra,Nashik,Crop disease and pest,40
+2023-06-23,Maharashtra,Nashik,Government schemes,28
+2023-06-24,Maharashtra,Nashik,Crop price and market,57
+2023-06-24,Maharashtra,Nashik,Crop disease and pest,43
+2023-06-24,Maharashtra,Nashik,Government schemes,30
+2023-06-25,Maharashtra,Nashik,Crop price and market,57
+2023-06-25,Maharashtra,Nashik,Crop disease and pest,43
+2023-06-25,Maharashtra,Nashik,Government schemes,30
+2023-06-26,Maharashtra,Nashik,Crop price and market,63
+2023-06-26,Maharashtra,Nashik,Crop disease and pest,48
+2023-06-26,Maharashtra,Nashik,Government schemes,33
+2023-06-27,Maharashtra,Nashik,Crop price and market,66
+2023-06-27,Maharashtra,Nashik,Crop disease and pest,49
+2023-06-27,Maharashtra,Nashik,Government schemes,34
+2023-06-28,Maharashtra,Nashik,Crop price and market,61
+2023-06-28,Maharashtra,Nashik,Crop disease and pest,46
+2023-06-28,Maharashtra,Nashik,Government schemes,32
+2023-06-29,Maharashtra,Nashik,Crop price and market,65
+2023-06-29,Maharashtra,Nashik,Crop disease and pest,49
+2023-06-29,Maharashtra,Nashik,Government schemes,34

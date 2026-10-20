@@ -1,0 +1,32 @@
+========================================================================
+             AGRICULTURAL INFORMATION AND MARKET ADVISORY
+========================================================================
+Region:             Maharashtra
+Commodity:          Onion
+Information Period: 2023-01-01 to 2023-06-29
+Generated At:       2026-10-20 12:57 UTC
+------------------------------------------------------------------------
+
+1. WHAT IS HAPPENING?
+  * Price:    Recorded wholesale Onion prices have declined recently.
+              Between 2023-06-23 and 2023-06-29, average wholesale prices dropped by roughly 6.1% (from around Rs 1167 to Rs 1097 per quintal). The latest recorded price is Rs 1141 per quintal.
+  * Margin:   The wholesale-to-retail price spread is within typical ranges.
+  * Fuel:     Diesel fuel prices have remained steady.
+  * Advisory: Advisory support lines are operating under normal conditions.
+
+2. WHAT THIS MEANS FOR YOU:
+  * Mandi arrivals may be heavy or buyer demand has softened in recorded markets. Taking produce to the first available mandi without checking local rates may result in lower returns.
+
+3. RECOMMENDED NEXT STEPS:
+  1. Compare today's prices across 2 or 3 nearby APMC mandis before loading produce; neighbouring markets often vary by Rs 100–300 per quintal.
+  2. If your crop is non-perishable (such as dry onions or grains) and you have dry, safe storage, consider whether delaying sale fits your financial situation.
+  3. Kisan Call Centre (1800-180-1551) is readily accessible for any routine crop, seed, or fertilizer questions.
+
+4. ASSISTANCE & SUPPORT:
+  * Kisan Call Centre (Toll-Free): 1800-180-1551 (6:00 AM - 10:00 PM)
+  * Contact your local village Krishi Sahayak or nearest KVK agronomist.
+
+5. IMPORTANT NOTICE:
+  * Data Provenance: OPERATIONAL DATA.
+  * Estimates are not guaranteed future prices. Farm decisions depend on local conditions.
+========================================================================

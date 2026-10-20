@@ -36,6 +36,7 @@ from app.analysis import (
     save_analysis_tables
 )
 from app.forecasting import generate_forecast
+from app.recommendations import generate_farmer_recommendations
 from scripts.generate_demo_data import generate_synthetic_data
 
 
@@ -198,10 +199,39 @@ def run_full_pipeline(
         print(f"\n  [OK] Full Research Summary Report Generated:")
         print(f"       -> {rep['report_path']}")
 
+        # -------------------------------------------------------------
+        # Step 6: Plain-Language Farmer Advisory Generation
+        # -------------------------------------------------------------
+        print("\n[PHASE 6/6] Generating Plain-Language Farmer Advisory & Action Plan...")
+        advisory = generate_farmer_recommendations(
+            df=df,
+            forecast_res=fc,
+            state=state,
+            commodity=commodity,
+            quality=quality
+        )
+        print(f"  [OK] Farmer Advisory Reports Generated:")
+        print(f"       -> Markdown:   {advisory['report_md_path']}")
+        print(f"       -> Plain Text: {advisory['report_txt_path']}")
+
         print("\n" + "=" * 72)
         print("          ALL PIPELINE STAGES COMPLETED SUCCESSFULLY!")
         print("=" * 72)
-        print(f"Review the markdown summary report at: {rep['report_path']}\n")
+        print("\n" + "-" * 72)
+        print("             FARMER-FRIENDLY ADVISORY SUMMARY")
+        print("-" * 72)
+        print(f"  Region:    {advisory['region']}")
+        print(f"  Commodity: {advisory['commodity']}")
+        print(f"  Situation: {advisory['price_headline']}")
+        print("\n  Recommended Next Steps:")
+        for idx, step in enumerate(advisory["recommended_steps"], start=1):
+            print(f"    {idx}. {step}")
+        if advisory.get("combined_alert"):
+            print(f"\n  [SPECIAL CAUTION] Simultaneous price drop and fuel hike detected!")
+        print(f"\n  Assistance: Call Kisan Call Centre (Toll-Free 1800-180-1551)")
+        print("-" * 72)
+        print(f"\nTechnical Report: {rep['report_path']}")
+        print(f"Farmer Advisory:  {advisory['report_md_path']}\n")
 
     finally:
         db.close()
